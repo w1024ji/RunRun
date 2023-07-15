@@ -13,7 +13,7 @@ class BusRouteListXmlParser {
     @Throws(XmlPullParserException::class, IOException::class)
     //파서를 인스턴스화하고 파싱 프로세스를 시작
     fun parse(inputStream: InputStream): List<ItemList> {
-        //.use는 Executes the given block function on this resource and then closes it down correctly whether an exception is thrown or not
+
         inputStream.use { inputPara ->
             //inputStream이 shadow됐다고 하는데 왜 그럴까? 매개변수로 인식을 못한다.
             //그래서 inputStream을 inputPara로 이름 바꿔줌.

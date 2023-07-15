@@ -8,4 +8,5 @@
     <string name="updated">Just Updated!</string>
 
     <string name="parsed_data">Parsed Data</string>
+    <string name="this_is_parsed_xml">this is parsed xml</string>
 </resources>

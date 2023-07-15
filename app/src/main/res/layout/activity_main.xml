@@ -17,18 +17,5 @@
         android:text="@string/xml_button"
         android:textAlignment="viewStart" />
 
-    <TextView
-        android:id="@+id/xml_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:text="@string/xml_text" />
-
-    <TextView
-        android:id="@+id/parsed_data"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/parsed_data" />
-
 
 </LinearLayout>
