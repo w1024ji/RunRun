@@ -18,5 +18,6 @@ class MainActivity : AppCompatActivity() {
         // 이 함수의 매개변수에는 시스템에 실행을 요청할 컴포넌트의 정보가 담긴 Intent 객체를 전달한다.
 
         println("this is contained in my second commit")
+        today is a good day
     }
 }
