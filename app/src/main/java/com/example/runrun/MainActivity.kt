@@ -19,5 +19,6 @@ class MainActivity : AppCompatActivity() {
 
         println("this is contained in my second commit")
         println("Experimental")
+        println("hello from your friend")
     }
 }
