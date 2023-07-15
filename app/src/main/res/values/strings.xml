@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">RunRun</string>
+    <string name="xml_button">Xml Parsing Button</string>
+    <string name="xml_text">Xml Parsing Textview</string>
+    <string name="connection_error">Connection Error Occur!</string>
+    <string name="xml_error">Xml Error Occur!</string>
+    <string name="page_title">Page Title</string>
+    <string name="updated">Just Updated!</string>
+
+    <string name="parsed_data">Parsed Data</string>
+</resources>
