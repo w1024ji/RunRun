@@ -32,7 +32,7 @@ class BusRouteListXmlParser {
     @Throws(XmlPullParserException::class, IOException::class)
     private fun readFeed(parser: XmlPullParser): List<ItemList> {
         var entries = mutableListOf<ItemList>()
-        //parser.require(XmlPullParser.START_TAG, ns, "feed") 이거 안 해도 될듯?
+
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.eventType != XmlPullParser.START_TAG) {
                 continue

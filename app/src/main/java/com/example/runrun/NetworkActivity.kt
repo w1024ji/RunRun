@@ -2,7 +2,6 @@ package com.example.runrun
 
 
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import org.xmlpull.v1.XmlPullParserException
@@ -12,14 +11,15 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 class NetworkActivity : AppCompatActivity() {
-    private var startOrStop: String? = intent.getStringExtra("startOrStop")
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_network)
-        var xmlText : TextView = findViewById(R.id.xmlTextview)
+        val startOrStop: String? = intent.getStringExtra("startOrStop")
+        val xmlText : TextView = findViewById(R.id.xmlTextview)
         if (startOrStop == "start"){
             var parsedText = loadPage()
-            xmlText.text = parsedText
+            xmlText.setText(parsedText)
         }
     }
 
@@ -50,12 +50,6 @@ class NetworkActivity : AppCompatActivity() {
         var parsedString:String? = null
         if (sPref.equals(ANY) && (wifiConnected || mobileConnected)) {
             parsedString = downloadXml(BUS_URL) //String을 리턴한다
-            //
-            //여기서 핸들러로 MainActivity UI에 있는 TextView창에 parsedString을 띄울 수 있게 구현해야 한다!!!
-            //
-            //
-            //
-            //
         } else if (sPref.equals(WIFI) && wifiConnected) {
             downloadXml(BUS_URL)
         } else {
@@ -66,10 +60,10 @@ class NetworkActivity : AppCompatActivity() {
 
     // Download XML feed from BUS API.
     //이 함수는 String?타입의 result를 리턴한다. onCreate()를 만들고 그 안에서 result가지고 Textview에 띄우고 싶다.
-    private fun downloadXml(vararg urls: String) : String? {
+    private fun downloadXml(urls: String) : String? {
         var result: String? = try {
             // loadXmlFromNetwork()의 반환값은 HTML string
-            loadXmlFromNetwork(urls[0]) // 왜 urls[0]인지 모르겠다!!!
+            loadXmlFromNetwork(urls) // 왜 urls[0]인지 모르겠다!!!
         } catch (e: IOException) {
             resources.getString(R.string.connection_error)
         } catch (e: XmlPullParserException) {
