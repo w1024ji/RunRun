@@ -12,7 +12,7 @@ private val ns: String? = null
 class BusRouteListXmlParser {
     @Throws(XmlPullParserException::class, IOException::class)
     //파서를 인스턴스화하고 파싱 프로세스를 시작
-    fun parse(inputStream: InputStream): List<ItemList> {
+    fun parse(inputStream: InputStream?): List<ItemList> {
 
         inputStream.use { inputPara ->
             //inputStream이 shadow됐다고 하는데 왜 그럴까? 매개변수로 인식을 못한다.
