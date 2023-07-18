@@ -4,5 +4,5 @@
 local.properties
 
 # gradle files
-.gradle/
-build/
+.gradle
+/build

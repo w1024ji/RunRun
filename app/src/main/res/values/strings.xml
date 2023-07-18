@@ -10,4 +10,6 @@
     <string name="parsed_data">Parsed Data</string>
     <string name="this_is_parsed_xml">this is parsed xml</string>
     <string name="i_am_parsed_xml_data">I am parsed xml data</string>
+    <string name="hello_this_is_edittext">hello this is editText</string>
+    <string name="this_is_second_textview">this is second textview</string>
 </resources>

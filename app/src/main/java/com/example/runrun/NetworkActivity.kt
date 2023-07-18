@@ -3,6 +3,7 @@ package com.example.runrun
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import org.xmlpull.v1.XmlPullParserException
@@ -12,6 +13,7 @@ import java.net.HttpURLConnection
 import java.net.SocketException
 import java.net.SocketTimeoutException
 import java.net.URL
+import kotlin.concurrent.thread
 import kotlin.math.log
 
 class NetworkActivity : AppCompatActivity() {
@@ -23,9 +25,14 @@ class NetworkActivity : AppCompatActivity() {
         setContentView(R.layout.activity_network)
         val startOrStop: String? = intent.getStringExtra("startOrStop")
         val xmlText : TextView = findViewById(R.id.xmlTextview)
+//        val xmlEdittext: EditText = findViewById(R.id.xmlEditText)
         if (startOrStop == "start"){
-            var parsedText = loadPage()
-            xmlText.setText(parsedText)
+            thread(start = true){
+                var parsedText = loadPage()
+                runOnUiThread{
+                    xmlText.setText(parsedText)
+                }
+            }
         }
     }
 
@@ -34,8 +41,8 @@ class NetworkActivity : AppCompatActivity() {
 
         const val WIFI = "Wi-Fi"
         const val ANY = "Any"
-        const val BUS_URL = "..."
-
+        const val serviceKey = BuildConfig.SERVICE_KEY
+        const val BUS_URL = "http://ws.bus.go.kr/api/rest/arrive/getArrInfoByRoute?ServiceKey="+ serviceKey+"&stId=109000052&busRouteId=109900010&ord=26"
         // Whether there is a Wi-Fi connection.
         private var wifiConnected = true //true로 바꿔둠
 
@@ -55,6 +62,7 @@ class NetworkActivity : AppCompatActivity() {
             parsedString = downloadXml(BUS_URL) // 연습이라 사실상 여기서 끝나게 만들었다. 일단은 말이지
             if (parsedString == null){
                 Log.d("NetworkActivity : ---", "loadPage()에서 parsedString이 null을 받음")
+                println("loadPage()에서 parsedString이 null임")
             }
 
         } else if (sPref.equals(WIFI) && wifiConnected) {
@@ -62,6 +70,7 @@ class NetworkActivity : AppCompatActivity() {
         } else {
             // Show error. 에러 시 사용자에게 무엇을 보여줄 것인가?
         }
+        println("loadPage()의 parsedString 리턴 직전: $parsedString")
         return parsedString
     }
 
@@ -73,8 +82,8 @@ class NetworkActivity : AppCompatActivity() {
         } catch (e: XmlPullParserException) {
             resources.getString(R.string.xml_error)
         }
+        println("downloadXml()에서 result리턴 직전 값: $result")
         return result
-
         }
 
     @Throws(XmlPullParserException::class, IOException::class)
@@ -83,8 +92,11 @@ class NetworkActivity : AppCompatActivity() {
         if (downloadUrl(urlString) == null){
 //            println("loadXmlFromNetwork()에서 null 발생")
             Log.d("NetworkActivity : ---", "loadXmlFromNetwork()에서 null 발생")
+            println("loadXmlFromNetwork()에서 downloadUrl(urlString)==null임")
         }
+        //null이 아닌 거 확인됨
         val entries:List<BusRouteListXmlParser.ItemList> = BusRouteListXmlParser().parse(downloadUrl(urlString))
+        println("loadXmlFromNetwork()에서 entries.toString()리턴 직전 값 : $entries")
         return entries.toString()
     }
 
