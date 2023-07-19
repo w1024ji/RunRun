@@ -25,7 +25,7 @@ class NetworkActivity : AppCompatActivity() {
         setContentView(R.layout.activity_network)
         val startOrStop: String? = intent.getStringExtra("startOrStop")
         val xmlText : TextView = findViewById(R.id.xmlTextview)
-//        val xmlEdittext: EditText = findViewById(R.id.xmlEditText)
+
         if (startOrStop == "start"){
             thread(start = true){
                 var parsedText = loadPage()
@@ -90,7 +90,6 @@ class NetworkActivity : AppCompatActivity() {
     private fun loadXmlFromNetwork(urlString: String): String {
 
         if (downloadUrl(urlString) == null){
-//            println("loadXmlFromNetwork()에서 null 발생")
             Log.d("NetworkActivity : ---", "loadXmlFromNetwork()에서 null 발생")
             println("loadXmlFromNetwork()에서 downloadUrl(urlString)==null임")
         }

@@ -15,11 +15,10 @@ class MainActivity : AppCompatActivity() {
         val xmlButton: Button = findViewById(R.id.xml_button)
         xmlButton.setOnClickListener{
 
-
-                val intent = Intent(this, NetworkActivity::class.java)
-                intent.putExtra("startOrStop", "start")
-                startActivity(intent)
-                //finish()
+            val intent = Intent(this, NetworkActivity::class.java)
+            intent.putExtra("startOrStop", "start")
+            startActivity(intent)
+            //finish()
 
         }
     }

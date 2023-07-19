@@ -33,103 +33,114 @@ class BusRouteListXmlParser {
             if (parser.eventType != XmlPullParser.START_TAG) {
                 continue
             }
-            if (parser.name == "itemList") { // 이 if절을 아예 통과를 못 하는 거 같은데
-                entries.add(readItemList(parser)) // 여기서 문제가 생기나??
+            if (parser.name == "comMsgHeader") { // 통과 !!!!!!!!!!!!!!!!!!
+                println("if(parser.name == comMsgHeader) 통과") // 통과!!!!!!!!!!!!!!!!!!!!!
+
+                entries.add(readItemList(parser))
                 println("entries.add(readItemList(parser))직후 entries 상태 : $entries")
             } else {
-                Log.d("readFeed()에서 else경우 발생 : ", "skip(parser)")
-                skip(parser)
+                Log.d("readFeed()에서 else경우 발생 : ", "skip(parser)") // 발생 안 함
+                //skip(parser)
             }
         }
-        //전체 피드가 반복적으로 처리되고 나면 readFeed()는 피드에서 추출한 항목(중첩된 데이터 멤버 포함)이 들어 있는 List를 반환
-        println("readFeed()의 entries 리턴값 직전 : $entries") // [ ]
+
+        println("readFeed()의 entries 리턴값 직전 : $entries")
         return entries
     }
 
-    data class ItemList(var rtNm: String?, var stNm: String?, var arrmsg1: String?, var arrmsg2: String?)
+    data class ItemList(
+        var rtNm: String?,
+        var stNm: String?,
+        var arrmsg1: String?,
+        var arrmsg2: String?
+    )
 
     @Throws(IOException::class, XmlPullParserException::class)
     private fun readItemList(parser: XmlPullParser): ItemList {
-        parser.require(XmlPullParser.START_TAG, ns, "itemList")
+        println("readItemList시작의 parser.name은? : ${parser.name}") // comMsgHeader
+
         var rtNm: String? = null
         var stNm: String? = null
         var arrmsg1: String? = null
         var arrmsg2: String? = null
-        println("read함수들 시작하기 전 null 상태의 변수들 : $rtNm, $stNm, $arrmsg1, $arrmsg2") // 아예 안 나온다
+        println("read함수들 시작하기 전 null 상태의 변수들 : $rtNm, $stNm, $arrmsg1, $arrmsg2")
         while (parser.next() != XmlPullParser.END_DOCUMENT) {
-            if (parser.eventType != XmlPullParser.START_TAG) {
+            if (parser.eventType == XmlPullParser.START_TAG) {
+                println("when문 들어가기 전 parser.name은 : ${parser.name}")
+                when (parser.name) {
+                    "rtNm" -> rtNm = readRtNm(parser)
+                    "stNm" -> stNm = readStNm(parser)
+                    "arrmsg1" -> arrmsg1 = readMsg1(parser)
+                    "arrmsg2" -> arrmsg2 = readMsg2(parser)
+                    else -> continue
+                }
+            } else {
                 continue
             }
-            when (parser.name) {
-                "rtNm" -> rtNm = readRtNm(parser)
-                "stNm" -> stNm = readStNm(parser)
-                "arrmsg1" -> arrmsg1 = readMsg1(parser)
-                "arrmsg2" -> arrmsg2 = readMsg2(parser)
-                else -> skip(parser)
-            }
         }
-        println("readItemList()의 리턴 직전 값: ${ItemList(rtNm, stNm, arrmsg1, arrmsg2)}") // 아예 안 나온다
+        println("readItemList()의 리턴 직전 값: ${ItemList(rtNm, stNm, arrmsg1, arrmsg2)}")
         return ItemList(rtNm, stNm, arrmsg1, arrmsg2)
     }
+
     //Processes RouteName tags in the feed
     @Throws(IOException::class, XmlPullParserException::class)
     private fun readRtNm(parser: XmlPullParser): String {
-        parser.require(XmlPullParser.START_TAG, ns, "rtNm")
-        var rtNm = readText(parser)
-        parser.require(XmlPullParser.END_TAG, ns, "rtNm")
+        var rtNm = parser.next().toString()
+        parser.next()
         println("readRtNm()의 리턴 직전 값 : $rtNm")
         return rtNm
     }
+
     //Processes StationName tags in the feed
     @Throws(IOException::class, XmlPullParserException::class)
     private fun readStNm(parser: XmlPullParser): String {
-        parser.require(XmlPullParser.START_TAG, ns, "stNm")
-        var stNm = readText(parser)
-        parser.require(XmlPullParser.END_TAG, ns, "stNm")
+        var stNm = parser.next().toString()
+        parser.next()
         println("readStNm()의 리턴 직전 값 : $stNm")
         return stNm
     }
+
     //Processes first arrive
     @Throws(IOException::class, XmlPullParserException::class)
     private fun readMsg1(parser: XmlPullParser): String {
-        parser.require(XmlPullParser.START_TAG, ns, "arrmsg1")
-        var arrmsg1 = readText(parser)
-        parser.require(XmlPullParser.END_TAG, ns, "arrmsg1")
-        println("readMsg1()의 리턴 직전 값 : $arrmsg1")
+        var arrmsg1 = parser.next().toString()
+        parser.next()
+        println("readMsg1()의 리턴 직전 값 : $arrmsg1") // 4
         return arrmsg1
     }
+
     //Processes second arrive
     @Throws(IOException::class, XmlPullParserException::class)
     private fun readMsg2(parser: XmlPullParser): String {
-        parser.require(XmlPullParser.START_TAG, ns, "arrmsg2")
-        var arrmsg2 = readText(parser)
-        parser.require(XmlPullParser.END_TAG, ns, "arrmsg2")
+        var arrmsg2 = parser.next().toString()
+        parser.next()
         println("readMsg2()의 리턴 직전 값 : $arrmsg2")
         return arrmsg2
     }
-    //extract text values.
-    @Throws(IOException::class, XmlPullParserException::class)
-    private fun readText(parser: XmlPullParser): String {
-        var result = ""
-        if (parser.next() == XmlPullParser.TEXT) {
-            result = parser.text
-            parser.nextTag()
-        }
-        println("readText()의 리턴 직전 값 : $result")
-        return result
-    }
-    // skip uninterested data
-    @Throws(IOException::class, XmlPullParserException::class)
-    private fun skip(parser: XmlPullParser) {
-        if (parser.eventType != XmlPullParser.START_TAG) {
-            throw IllegalStateException()
-        }
-        var depth = 1
-        while (depth != 0) {
-            when (parser.next()) {
-                XmlPullParser.END_TAG -> depth--
-                XmlPullParser.START_TAG -> depth++
-            }
-        }
-    }
 }
+    //extract text values.
+//    @Throws(IOException::class, XmlPullParserException::class)
+//    private fun readText(parser: XmlPullParser): String {
+//        var result = ""
+//        if (parser.next() == XmlPullParser.TEXT) {
+//            result = parser.text
+//            parser.nextTag()
+//        }
+//        println("readText()의 리턴 직전 값 : $result")
+//        return result
+//    }
+    // skip uninterested data
+//    @Throws(IOException::class, XmlPullParserException::class)
+//    private fun skip(parser: XmlPullParser) {
+//        if (parser.eventType != XmlPullParser.START_TAG) {
+//            throw IllegalStateException()
+//        }
+//        var depth = 1
+//        while (depth != 0) {
+//            when (parser.next()) {
+//                XmlPullParser.END_TAG -> depth--
+//                XmlPullParser.START_TAG -> depth++
+//            }
+//        }
+//    }
+//
