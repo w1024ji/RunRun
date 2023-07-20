@@ -62,7 +62,6 @@ class NetworkActivity : AppCompatActivity() {
             parsedString = downloadXml(BUS_URL) // 연습이라 사실상 여기서 끝나게 만들었다. 일단은 말이지
             if (parsedString == null){
                 Log.d("NetworkActivity : ---", "loadPage()에서 parsedString이 null을 받음")
-                println("loadPage()에서 parsedString이 null임")
             }
 
         } else if (sPref.equals(WIFI) && wifiConnected) {
@@ -70,7 +69,6 @@ class NetworkActivity : AppCompatActivity() {
         } else {
             // Show error. 에러 시 사용자에게 무엇을 보여줄 것인가?
         }
-        println("loadPage()의 parsedString 리턴 직전: $parsedString")
         return parsedString
     }
 
@@ -82,7 +80,6 @@ class NetworkActivity : AppCompatActivity() {
         } catch (e: XmlPullParserException) {
             resources.getString(R.string.xml_error)
         }
-        println("downloadXml()에서 result리턴 직전 값: $result")
         return result
         }
 
@@ -91,11 +88,9 @@ class NetworkActivity : AppCompatActivity() {
 
         if (downloadUrl(urlString) == null){
             Log.d("NetworkActivity : ---", "loadXmlFromNetwork()에서 null 발생")
-            println("loadXmlFromNetwork()에서 downloadUrl(urlString)==null임")
         }
         //null이 아닌 거 확인됨
         val entries:List<BusRouteListXmlParser.ItemList> = BusRouteListXmlParser().parse(downloadUrl(urlString))
-        println("loadXmlFromNetwork()에서 entries.toString()리턴 직전 값 : $entries")
         return entries.toString()
     }
 
