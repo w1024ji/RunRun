@@ -3,8 +3,8 @@ package com.example.runrun
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
-import kotlin.concurrent.thread
 
 
 class MainActivity : AppCompatActivity() {
@@ -20,6 +20,12 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
             //finish()
 
+        }
+
+        val stationButton: Button = findViewById(R.id.StNm_button)
+        val stationName: EditText = findViewById(R.id.bustStNm_editText)
+        stationButton.setOnClickListener {
+            stationName.text.toString() // 음.... 일단 여기서 멈추고
         }
     }
 
