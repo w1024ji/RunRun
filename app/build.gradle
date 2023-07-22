@@ -1,6 +1,9 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+
+    //firebase 쓰려고 추가함
+    id 'com.google.gms.google-services'
 }
 
 // For local.properties
@@ -49,5 +52,13 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
     //implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4") //코루틴 쓰려고 추가함
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.0-RC")//둘 중 뭐를 써야할까
+
+    // Import the Firebase BoM
+    implementation platform('com.google.firebase:firebase-bom:32.2.0')
+    // TODO: Add the dependencies for Firebase products you want to use
+    // When using the BoM, don't specify versions in Firebase dependencies
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+    //firestore 등록
+    implementation 'com.google.firebase:firebase-firestore-ktx:24.7.0'
 
 }
