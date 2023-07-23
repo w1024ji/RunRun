@@ -10,7 +10,7 @@
     <string name="parsed_data">Parsed Data</string>
     <string name="this_is_parsed_xml">this is parsed xml</string>
     <string name="this_is_second_textview">this is second textview</string>
-    <string name="type_station_name">type station name</string>
-    <string name="station_button">Station Button</string>
-    <string name="station_name">station name</string>
+    <string name="enter_bus">enter busNm</string>
+    <string name="enter_station">enter stationNm</string>
+    <string name="apply">apply</string>
 </resources>
