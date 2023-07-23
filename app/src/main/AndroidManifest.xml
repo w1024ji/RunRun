@@ -4,6 +4,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" /> <!-- 인터넷 권한 허용 -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
     <application
         android:allowBackup="true"
@@ -19,6 +21,13 @@
         tools:remove="android:appComponentFactory">
         <!--Didn't find class "androidx.core.app.CoreComponentFactory" 에러 때문에 추가함-->
         <!--위에 android:usesCleartextTraffic="false" 모든 url허용을 true에서 false로 바꿈.-->
+
+        <!--Google Map 사용하려고 아래 다섯 줄 추가함-->
+        <uses-library android:name="org.apache.http.legacy" android:required="false"/>
+        <meta-data android:name="com.google.android.maps.v2.API_KEY"
+            android:value="${GOOGLE_MAPS_API_KEY}" /> <!--이건 구글 지도 API키-->
+        <meta-data android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
 
         <!-- 만듦 -->
         <activity

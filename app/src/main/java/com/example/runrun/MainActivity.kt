@@ -22,10 +22,11 @@ class MainActivity : AppCompatActivity() {
 
         }
 
-        val stationButton: Button = findViewById(R.id.StNm_button)
-        val stationName: EditText = findViewById(R.id.bustStNm_editText)
-        stationButton.setOnClickListener {
-            stationName.text.toString() // 음.... 일단 여기서 멈추고
+        val applyButton: Button = findViewById(R.id.applyButton)
+        val busName: EditText = findViewById(R.id.enterBusName)
+        val stationName: EditText = findViewById(R.id.enterStation)
+        applyButton.setOnClickListener {
+            applyButton.text.toString() // 음.... 일단 여기서 멈추고
         }
     }
 

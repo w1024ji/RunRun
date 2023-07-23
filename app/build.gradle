@@ -17,6 +17,7 @@ android {
     defaultConfig {
         //service key 지정
         buildConfigField "String", "SERVICE_KEY", properties['serviceKey']
+        buildConfigField "String", "GOOGLE_MAPS_API_KEY", properties['google_map_api']
 
         applicationId "com.example.runrun"
         minSdk 24
@@ -60,5 +61,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics-ktx'
     //firestore 등록
     implementation 'com.google.firebase:firebase-firestore-ktx:24.7.0'
+
+    // to use Google Map
+    implementation 'com.google.android.gms:play-services:12.0.1'
 
 }
