@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
         val busName: EditText = findViewById(R.id.enterBusName)
         val stationName: EditText = findViewById(R.id.enterStation)
         applyButton.setOnClickListener {
-            applyButton.text.toString() // 음.... 일단 여기서 멈추고
+
         }
     }
 

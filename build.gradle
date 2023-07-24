@@ -10,4 +10,7 @@ plugins {
 
     // firebase 쓰려고 추가함
     id 'com.google.gms.google-services' version '4.3.15' apply false
+
+    // google maps 쓰려고 추가함
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin' version '2.0.1' apply false
 }
