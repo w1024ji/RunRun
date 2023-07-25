@@ -23,9 +23,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         val applyButton: Button = findViewById(R.id.applyButton)
-        val busName: EditText = findViewById(R.id.enterBusName)
-        val stationName: EditText = findViewById(R.id.enterStation)
+//        val busName: EditText = findViewById(R.id.enterBusName)
+//        val stationName: EditText = findViewById(R.id.enterStation)
         applyButton.setOnClickListener {
+            // map 잘 띄우는 지 테스트
+            val intent = Intent(this, RawMapViewDemoActivity::class.java)
+            startActivity(intent)
 
         }
     }

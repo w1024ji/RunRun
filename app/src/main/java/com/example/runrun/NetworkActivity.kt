@@ -42,7 +42,8 @@ class NetworkActivity : AppCompatActivity() {
         const val WIFI = "Wi-Fi"
         const val ANY = "Any"
         const val serviceKey = BuildConfig.SERVICE_KEY
-        const val BUS_URL = "http://ws.bus.go.kr/api/rest/arrive/getArrInfoByRoute?ServiceKey="+ serviceKey+"&stId=109000052&busRouteId=109900010&ord=26"
+        const val BUS_URL =
+            "http://ws.bus.go.kr/api/rest/arrive/getArrInfoByRoute?ServiceKey=$serviceKey&stId=109000052&busRouteId=109900010&ord=26"
         // Whether there is a Wi-Fi connection.
         private var wifiConnected = true //true로 바꿔둠
 

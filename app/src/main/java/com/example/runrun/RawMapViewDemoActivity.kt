@@ -89,6 +89,6 @@ class RawMapViewDemoActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     companion object {
-        private const val MAPVIEW_BUNDLE_KEY = "MapViewBundleKey"
+        private const val MAPVIEW_BUNDLE_KEY = BuildConfig.GOOGLE_MAP_API
     }
 }
