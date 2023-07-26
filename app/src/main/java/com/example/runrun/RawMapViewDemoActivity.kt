@@ -17,6 +17,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.GoogleMapOptions
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
@@ -42,6 +43,8 @@ class RawMapViewDemoActivity : AppCompatActivity(), OnMapReadyCallback {
         mMapView = findViewById<View>(R.id.map) as MapView
         mMapView!!.onCreate(mapViewBundle)
         mMapView!!.getMapAsync(this)
+
+
     }
 
     public override fun onSaveInstanceState(outState: Bundle) {
