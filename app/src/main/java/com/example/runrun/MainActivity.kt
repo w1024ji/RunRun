@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
 
@@ -23,11 +24,16 @@ class MainActivity : AppCompatActivity() {
         }
 
         val applyButton: Button = findViewById(R.id.applyButton)
-//        val busName: EditText = findViewById(R.id.enterBusName)
-//        val stationName: EditText = findViewById(R.id.enterStation)
+        val busName: EditText = findViewById(R.id.enterBusName)
+        val stationName: EditText = findViewById(R.id.enterStation)
         applyButton.setOnClickListener {
-            // map 잘 띄우는 지 테스트
+            // 사용자의 입력을 잘 받는지 테스트
+            var busNm : String = busName.text.toString()
+            var stNm : String = stationName.text.toString()
+
             val intent = Intent(this, RawMapViewDemoActivity::class.java)
+            intent.putExtra("lng",  127.0494952)
+            intent.putExtra("lat", 37.66042516)
             startActivity(intent)
 
         }

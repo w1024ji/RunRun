@@ -33,7 +33,7 @@
             android:layout_marginTop="112dp"
             android:ems="10"
             android:hint="@string/enter_bus"
-            android:inputType="textPersonName"
+            android:inputType="text"
             app:layout_constraintBottom_toTopOf="@+id/enterStation"
             app:layout_constraintStart_toStartOf="@+id/enterStation"
             app:layout_constraintTop_toTopOf="parent"
@@ -47,7 +47,7 @@
             android:layout_marginTop="20dp"
             android:ems="10"
             android:hint="@string/enter_station"
-            android:inputType="textPersonName"
+            android:inputType="text"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/enterBusName" />
 
@@ -61,6 +61,34 @@
             app:layout_constraintHorizontal_bias="0.505"
             app:layout_constraintStart_toEndOf="@+id/enterStation"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/testBus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="73dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginBottom="170dp"
+            android:text="let's test bus input"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/enterStation" />
+
+        <TextView
+            android:id="@+id/testStation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="62dp"
+            android:layout_marginTop="90dp"
+            android:layout_marginBottom="150dp"
+            android:text="let's test station input"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/testBus"
+            app:layout_constraintVertical_bias="0.561" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
