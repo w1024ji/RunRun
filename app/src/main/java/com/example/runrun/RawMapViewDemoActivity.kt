@@ -24,6 +24,7 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
+import kotlin.concurrent.thread
 
 /**
  * This shows how to create a simple activity with a raw MapView and add a marker to it. This
@@ -37,55 +38,38 @@ class RawMapViewDemoActivity : AppCompatActivity(), OnMapReadyCallback,
     var latlng1 : LatLng = LatLng(0.0, 0.0)
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        println("onCreate() 함수 작동")
         super.onCreate(savedInstanceState)
         MapsInitializer.initialize(applicationContext, MapsInitializer.Renderer.LATEST, this)
-//        MapsInitializer.initialize(this, MapsInitializer.Renderer.LATEST, onCreate(mapViewBundle))
         setContentView(R.layout.google_map)
 
-        val intent = Intent(this, MainActivity::class.java)
-        val lng: Double = intent.getDoubleExtra("lng", 0.0)
-        val lat: Double = intent.getDoubleExtra("lat", 0.0)
-        latlng1 = LatLng(lat, lng)
+        thread(start = true) {
+            val lng: Double = intent.getDoubleExtra("lng", 0.0)
+            val lat: Double = intent.getDoubleExtra("lat", 0.0)
+            latlng1 = LatLng(lat, lng)
+            println("latlng1의 값은: $latlng1")
 
-        // *** IMPORTANT ***
-        // MapView requires that the Bundle you pass contain _ONLY_ MapView SDK
-        // objects or sub-Bundles.
-        var mapViewBundle: Bundle? = null
-        if (savedInstanceState != null) {
-            mapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY)
+            // *** IMPORTANT ***
+            // MapView requires that the Bundle you pass contain _ONLY_ MapView SDK
+            // objects or sub-Bundles.
+            var mapViewBundle: Bundle? = null
+            if (savedInstanceState != null) {
+                mapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY)
+            }
+            mMapView = findViewById<View>(R.id.map) as MapView
+            mMapView!!.onCreate(mapViewBundle)
+            mMapView!!.getMapAsync(this)
+
+            runOnUiThread{
+
+            }
         }
-        mMapView = findViewById<View>(R.id.map) as MapView
-        mMapView!!.onCreate(mapViewBundle)
-        println("latlng1 $latlng1")
-        mMapView!!.getMapAsync(this)
-
-
-
-//        var bounds = LatLngBounds.builder().include(latlng1).build()
-//        var cameraP = CameraPosition(latlng1, 13F, 0F, 0F)
-//        val options = GoogleMapOptions()
-//        var location = CameraUpdateFactory.newCameraPosition(cameraP)
-//        var cameraP = CameraPosition.builder()
-//        CameraUpdateFactory.newLatLngBounds(bounds, 200)
-
-
-
-//        runOnUiThread{
-//            options.mapType(GoogleMap.MAP_TYPE_NORMAL)
-//                .compassEnabled(true)
-//                .rotateGesturesEnabled(true)
-//                .tiltGesturesEnabled(true)
-//                .camera(cameraP)
-//
-//            MapView(applicationContext, options)
-//        }
-//        val cameraP: CameraPosition = CameraPosition.builder().target(latlng1).zoom(13F).build()
-//        options.camera(CameraUpdateFactory.newCameraPosition(cameraP))
 
 
     }
 
     public override fun onSaveInstanceState(outState: Bundle) {
+        println("onSaveInstanceState() 함수 작동")
         super.onSaveInstanceState(outState)
         var mapViewBundle = outState.getBundle(MAPVIEW_BUNDLE_KEY)
         if (mapViewBundle == null) {
@@ -96,36 +80,44 @@ class RawMapViewDemoActivity : AppCompatActivity(), OnMapReadyCallback,
     }
 
     override fun onResume() {
+        println("onResume() 함수 작동")
         super.onResume()
         mMapView!!.onResume()
     }
 
     override fun onStart() {
+        println("onStart() 함수 작동")
         super.onStart()
         mMapView!!.onStart()
     }
 
     override fun onStop() {
+        println("onStop()함수 작동")
         super.onStop()
         mMapView!!.onStop()
     }
 
     override fun onMapReady(map: GoogleMap) {
 //        map.addMarker(MarkerOptions().position(LatLng(0.0, 0.0)).title("Marker"))
+        //밑에 마커 아프리카 옆에서 뜸 하하
+        println("onMapReady()함수 작동")
         map.addMarker(MarkerOptions().position(latlng1).title("latlng1"))
     }
 
     override fun onPause() {
+        println("onPause()함수 작동")
         mMapView!!.onPause()
         super.onPause()
     }
 
     override fun onDestroy() {
+        println("onDestroy()함수 작동")
         mMapView!!.onDestroy()
         super.onDestroy()
     }
 
     override fun onLowMemory() {
+        println("onLowMemory()함수 작동")
         super.onLowMemory()
         mMapView!!.onLowMemory()
     }
@@ -135,6 +127,7 @@ class RawMapViewDemoActivity : AppCompatActivity(), OnMapReadyCallback,
     }
 
     override fun onMapsSdkInitialized(renderer: MapsInitializer.Renderer) {
+        println("onMapsSdkInitialized()함수 작동")
         when (renderer) {
             MapsInitializer.Renderer.LATEST -> Log.d("MapsDemo", "The latest version of the renderer is used.")
             MapsInitializer.Renderer.LEGACY -> Log.d("MapsDemo", "The legacy version of the renderer is used.")
