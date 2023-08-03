@@ -60,9 +60,6 @@ class RawMapViewDemoActivity : AppCompatActivity(), OnMapReadyCallback,
             mMapView!!.onCreate(mapViewBundle)
             mMapView!!.getMapAsync(this)
 
-            runOnUiThread{
-
-            }
         }
 
 
