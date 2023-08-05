@@ -15,5 +15,6 @@
         app:layout_constraintTop_toTopOf="parent"
         map:uiScrollGestures="true"
         map:uiZoomControls="true"
-        map:uiZoomGestures="true"/>
+        map:uiZoomGestures="true"
+        tools:context=".RawMapViewDemoActivity"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

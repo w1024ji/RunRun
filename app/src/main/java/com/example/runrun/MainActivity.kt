@@ -22,6 +22,7 @@ import com.google.android.libraries.places.api.model.TypeFilter
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.gson.Gson
 import java.util.*
 
 
@@ -39,17 +40,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         val applyButton: Button = findViewById(R.id.applyButton)
-        val busName: EditText = findViewById(R.id.enterBusName)
         val stationName: EditText = findViewById(R.id.enterStation)
+        val busName: EditText = findViewById(R.id.enterBusName)
 
         applyButton.setOnClickListener {
-            // 사용자의 입력을 잘 받는지 테스트
-            var busNm: String = busName.text.toString()
-            var stNm: String = stationName.text.toString()
-
-            // Firestore에서 stNm이 일치하는 데이터행들 중에서
-            // 같은 이름을 가진 정류장들의 x좌표, y좌표를 가져와야 한다 now this is the case.
-
             // Initialize Firestore
             val db = FirebaseFirestore.getInstance()
 
@@ -57,18 +51,24 @@ class MainActivity : AppCompatActivity() {
             val busInfoCollection = db.collection("busInfo")
 
             // User-entered bus stop name
-            val enteredBusStopName = "종로2가사거리" // Replace this with the actual input
+            var stNm: String = stationName.text.toString()
+            var busNm: String = busName.text.toString()
 
-            // Query to retrieve data sets with matching "정류소명"
-            val query = busInfoCollection.whereEqualTo("정류소명", enteredBusStopName)
+            // Query to retrieve data sets with matching "정류소명" and "노선명"
+            val query = busInfoCollection
+                .whereEqualTo("정류소명", stNm)
+                .whereEqualTo("노선명", busNm)
 
             // Execute the query
             query.get()
                 .addOnSuccessListener { querySnapshot ->
                     val matchingDataList = mutableListOf<Map<String, Any>>()
 
+                    Log.d("User Input", "stationName: $stNm, busName: $busNm")
+
+                    // getDocuments() returns documents as a List
                     for (documentSnapshot in querySnapshot.documents) {
-                        val matchingData = documentSnapshot.data
+                        val matchingData = documentSnapshot.data // returns as a Map
                         if (matchingData != null) {
                             matchingDataList.add(matchingData)
                         }
@@ -78,18 +78,15 @@ class MainActivity : AppCompatActivity() {
                     }
                     Log.d("matchingDataList 확인 : ", matchingDataList.toString())
 
-                    // Now you have a list of matching data sets
-                    // You can process or display them as needed
+                    // use the Gson library to serialize and deserialize it.
+                    val matchingDataListJson = Gson().toJson(matchingDataList)
+                    val intent = Intent(this, RawMapViewDemoActivity::class.java)
+                    intent.putExtra("matchingDataListJson", matchingDataListJson)
+                    startActivity(intent)
                 }
                 .addOnFailureListener { exception ->
                     Log.d("addOnFailureListener : ", "실패! : $exception")
                 }
-
-            // Intent to RawMapViewDemoActivity.kt
-//            val intent = Intent(this, RawMapViewDemoActivity::class.java)
-//            intent.putExtra("lng", 127.0494952)
-//            intent.putExtra("lat", 37.66042516)
-//            startActivity(intent)
         }
 
 

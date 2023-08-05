@@ -24,6 +24,8 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlin.concurrent.thread
 
 /**
@@ -33,9 +35,8 @@ import kotlin.concurrent.thread
 class RawMapViewDemoActivity : AppCompatActivity(), OnMapReadyCallback,
     OnMapsSdkInitializedCallback {
     private var mMapView: MapView? = null
-
-
-    var latlng1 : LatLng = LatLng(0.0, 0.0)
+    // Declare matchingDataList as a class-level property
+    private lateinit var matchingDataList: MutableList<Map<String, Any>>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         println("onCreate() 함수 작동")
@@ -43,24 +44,21 @@ class RawMapViewDemoActivity : AppCompatActivity(), OnMapReadyCallback,
         MapsInitializer.initialize(applicationContext, MapsInitializer.Renderer.LATEST, this)
         setContentView(R.layout.google_map)
 
-        thread(start = true) {
-            val lng: Double = intent.getDoubleExtra("lng", 0.0)
-            val lat: Double = intent.getDoubleExtra("lat", 0.0)
-            latlng1 = LatLng(lat, lng)
-            println("latlng1의 값은: $latlng1")
+        // Retrieve matchingDataList JSON from intent extras
+        val matchingDataListJson = intent.getStringExtra("matchingDataListJson")
+        // Convert JSON to MutableList<Map<String, Any>>
+        matchingDataList = Gson().fromJson(matchingDataListJson, object : TypeToken<MutableList<Map<String, Any>>>() {}.type)
 
-            // *** IMPORTANT ***
-            // MapView requires that the Bundle you pass contain _ONLY_ MapView SDK
-            // objects or sub-Bundles.
-            var mapViewBundle: Bundle? = null
-            if (savedInstanceState != null) {
-                mapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY)
-            }
-            mMapView = findViewById<View>(R.id.map) as MapView
-            mMapView!!.onCreate(mapViewBundle)
-            mMapView!!.getMapAsync(this)
-
+        // *** IMPORTANT ***
+        // MapView requires that the Bundle you pass contain _ONLY_ MapView SDK
+        // objects or sub-Bundles.
+        var mapViewBundle: Bundle? = null
+        if (savedInstanceState != null) {
+            mapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY)
         }
+        mMapView = findViewById<View>(R.id.map) as MapView
+        mMapView!!.onCreate(mapViewBundle)
+        mMapView!!.getMapAsync(this)
 
 
     }
@@ -95,10 +93,16 @@ class RawMapViewDemoActivity : AppCompatActivity(), OnMapReadyCallback,
     }
 
     override fun onMapReady(map: GoogleMap) {
-//        map.addMarker(MarkerOptions().position(LatLng(0.0, 0.0)).title("Marker"))
-        //밑에 마커 아프리카 옆에서 뜸 하하
         println("onMapReady()함수 작동")
-        map.addMarker(MarkerOptions().position(latlng1).title("latlng1"))
+        for (data in matchingDataList) {
+            val latitude = data["Y좌표"].toString().toDouble()
+            val longitude = data["X좌표"].toString().toDouble()
+
+            val location = LatLng(latitude, longitude)
+            Log.d("MarkerDebug", "Adding marker at $longitude, $latitude")
+
+            map.addMarker(MarkerOptions().position(location))
+        }
     }
 
     override fun onPause() {
@@ -129,7 +133,8 @@ class RawMapViewDemoActivity : AppCompatActivity(), OnMapReadyCallback,
             MapsInitializer.Renderer.LATEST -> Log.d("MapsDemo", "The latest version of the renderer is used.")
             MapsInitializer.Renderer.LEGACY -> Log.d("MapsDemo", "The legacy version of the renderer is used.")
             else -> {
-                println("ONGGGGGGGGGGGGGGGGGGG!!!!")
+                Log.d("onMapsSdkInitialized", "when - else 발생")
             }
-        }    }
+        }
+    }
 }
