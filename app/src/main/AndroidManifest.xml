@@ -4,8 +4,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" /> <!-- 인터넷 권한 허용 -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -17,22 +17,30 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="false"
-        tools:targetApi="31"
-        tools:remove="android:appComponentFactory">
-        <!--Didn't find class "androidx.core.app.CoreComponentFactory" 에러 때문에 추가함-->
-        <!--위에 android:usesCleartextTraffic="false" 모든 url허용을 true에서 false로 바꿈.-->
+        tools:remove="android:appComponentFactory"
+        tools:targetApi="31">
+        <activity
+            android:name=".ClientInputActivity"
+            android:exported="false" />
+        <!-- Didn't find class "androidx.core.app.CoreComponentFactory" 에러 때문에 추가함 -->
+        <!-- 위에 android:usesCleartextTraffic="false" 모든 url허용을 true에서 false로 바꿈. -->
+        <!-- Google Map 사용하려고 아래 다섯 줄 추가함 -->
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
 
-        <!--Google Map 사용하려고 아래 다섯 줄 추가함-->
-        <uses-library android:name="org.apache.http.legacy" android:required="false"/>
-        <meta-data android:name="com.google.android.geo.API_KEY"
-            android:value= "${google_map_api}" /> <!--이건 구글 지도 API키--> <!--잘 되는 거 맞아? 연결 된 거 맞아???-->
-        <meta-data android:name="com.google.android.gms.version"
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="${google_map_api}" /> <!-- 이건 구글 지도 API키 -->
+        <!-- 잘 되는 거 맞아? 연결 된 거 맞아??? -->
+        <meta-data
+            android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
         <activity
             android:name="com.google.android.libraries.places.widget.AutocompleteActivity"
-            tools:replace="android:theme"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme"
+            tools:replace="android:theme" />
         <activity
             android:name=".RawMapViewDemoActivity"
             android:exported="true" />
@@ -41,11 +49,12 @@
             android:exported="true" />
         <activity
             android:name=".MainActivity"
-            android:theme="@style/AppTheme"
             android:configChanges="orientation|screenSize"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

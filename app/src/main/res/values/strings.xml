@@ -13,7 +13,12 @@
     <string name="enter_bus">enter busNm</string>
     <string name="enter_station">enter stationNm</string>
     <string name="apply">apply</string>
-<!-- TODO: Remove or change this placeholder text -->
+    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="google_map_practice_contentDescription">google map practice contentDescription</string>
+    <string name="selected_bus_name">Selected Bus Name</string>
+    <string name="selected_station_name">Selected Station Name</string>
+    <string name="pick_a_day">pick a day</string>
+    <string name="pick_a_time">pick a time</string>
+    <string name="name_of_this_notification">name of this notification</string>
 </resources>
