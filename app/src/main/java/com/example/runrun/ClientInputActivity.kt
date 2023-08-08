@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.Spinner
 
 class ClientInputActivity : AppCompatActivity() {private lateinit var daySpinner: Spinner
@@ -16,6 +17,7 @@ class ClientInputActivity : AppCompatActivity() {private lateinit var daySpinner
         super.onCreate(savedInstanceState)
         setContentView(R.layout.client_input)
 
+        val nextButton : Button = findViewById(R.id.nextButton)
         daySpinner = findViewById(R.id.daySpinner)
         adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, daysOfWeek)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -30,10 +32,14 @@ class ClientInputActivity : AppCompatActivity() {private lateinit var daySpinner
                 adapter.remove("None")
                 adapter.insert(selectedDay, 0)
                 daySpinner.setSelection(0)
+
+                // Enable the button since something is selected
+                nextButton.isEnabled = true
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
-                // Do nothing
+                // Disable the button since nothing is selected
+                nextButton.isEnabled = false
             }
         }
 
