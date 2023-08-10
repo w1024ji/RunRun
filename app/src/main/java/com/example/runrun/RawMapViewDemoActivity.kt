@@ -13,6 +13,7 @@
 // limitations under the License.
 package com.example.runrun
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -38,6 +39,7 @@ class RawMapViewDemoActivity : AppCompatActivity(), OnMapReadyCallback, OnMapsSd
 
         val matchingDataListJson = intent.getStringExtra("matchingDataListJson")
         matchingDataList = Gson().fromJson(matchingDataListJson, object : TypeToken<MutableList<Map<String, Any>>>() {}.type)
+        Log.d("matchingDataList 값 : ", "$matchingDataListJson") // 잘 도착함
 
         setupMapView(savedInstanceState)
     }
@@ -62,26 +64,25 @@ class RawMapViewDemoActivity : AppCompatActivity(), OnMapReadyCallback, OnMapsSd
         }
     }
 
-
     override fun onResume() {
         super.onResume()
-        handleCommonLifecycleEvents("onResume", {
+        handleCommonLifecycleEvents("onResume") {
             Log.d("onResume", "Performing onResume specific actions.")
-        })
+        }
     }
 
     override fun onStart() {
         super.onStart()
-        handleCommonLifecycleEvents("onStart", {
+        handleCommonLifecycleEvents("onStart") {
             Log.d("onStart", "Performing onStart specific actions.")
-        })
+        }
     }
 
     override fun onStop() {
         super.onStop()
-        handleCommonLifecycleEvents("onStop", {
+        handleCommonLifecycleEvents("onStop") {
             Log.d("onStop", "Performing onStop specific actions.")
-        })
+        }
     }
 
     override fun onPause() {
@@ -107,18 +108,50 @@ class RawMapViewDemoActivity : AppCompatActivity(), OnMapReadyCallback, OnMapsSd
             val longitude = data["X좌표"].toString().toDoubleOrNull() ?: 0.0
             val location = LatLng(latitude, longitude)
             Log.d("MarkerDebug", "Adding marker at $longitude, $latitude")
+            // Adding marker at 127.0472314, 37.6610589
+            // Adding marker at 127.0473835, 37.66086168
 
-            map.addMarker(MarkerOptions().position(location))
+            val marker = map.addMarker(MarkerOptions().position(location))
+            marker?.tag = data // Attach data to the marker
+            Log.d("marker 값 : ", "$marker")
+            // com.google.android.gms.maps.model.Marker@e730475
 
             boundsBuilder.include(location) // Include each marker's location in the bounds
         }
 
         val bounds = boundsBuilder.build()
         val padding = resources.getDimensionPixelSize(R.dimen.map_padding) // Adjust padding as needed
-        Log.d("map_padding 값 : ", "$padding")
+        Log.d("map_padding 값 : ", "$padding") // 126
 
         // Set the camera to the bounds and apply padding for a good visual result
-        map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 48))
+        map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding))
+
+        map.setOnMarkerClickListener { marker ->
+            Log.d("setOnMarkerClickListener의 marker 값 : ", "$marker")
+            // com.google.android.gms.maps.model.Marker@ed44d2d
+
+            @Suppress("UNCHECKED_CAST")
+            val clickedMarkerData = marker.tag as? Map<String, Any>
+            Log.d("MarkerData", "Type of clickedMarkerData: ${clickedMarkerData?.javaClass?.simpleName}")
+            // LinkedTreeMap
+
+            if (clickedMarkerData != null) {
+                val arsId = clickedMarkerData["ARS_ID"]?.toString() ?: ""
+                val routeId = clickedMarkerData["ROUTE_ID"]?.toString() ?: ""
+                val nodeId = clickedMarkerData["NODE_ID"]?.toString() ?: ""
+
+                Log.d("보내기 전 arsId, routeId, nodeId의 값 : ", "$arsId, $routeId, $nodeId")
+
+                val intent = Intent(this, NetworkActivity::class.java)
+                intent.putExtra("startOrStop", "start")
+                intent.putExtra("arsId", arsId)
+                intent.putExtra("routeId", routeId)
+                intent.putExtra("nodeId", nodeId)
+                startActivity(intent)
+            }
+            false // Return false to allow the default behavior (info window to open)
+        }
+
     }
 
     companion object {

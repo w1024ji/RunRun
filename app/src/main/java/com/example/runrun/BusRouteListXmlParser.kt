@@ -59,6 +59,8 @@ class BusRouteListXmlParser {
         var arrmsg1: String? = null
         var arrmsg2: String? = null
         while (parser.next() != XmlPullParser.END_DOCUMENT) {
+            Log.d("Parser event type: ", "${parser.eventType}")
+            Log.d("Current tag name: ", "${parser.name}")
             if (parser.eventType == XmlPullParser.START_TAG) {
                 when (parser.name) {
                     "rtNm" -> rtNm = read(parser)

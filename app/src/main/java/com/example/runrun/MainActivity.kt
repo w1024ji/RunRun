@@ -32,17 +32,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        setupNetworkButton()
-        setupApplyButton()
-    }
 
-    private fun setupNetworkButton() {
-        val networkButton: Button = findViewById(R.id.xml_button)
-        networkButton.setOnClickListener {
-            val intent = Intent(this, NetworkActivity::class.java)
-            intent.putExtra("startOrStop", "start")
-            startActivity(intent)
-        }
+        setupApplyButton()
     }
 
     private fun setupApplyButton() {
@@ -76,6 +67,7 @@ class MainActivity : AppCompatActivity() {
 
         val intent = Intent(this, RawMapViewDemoActivity::class.java)
         intent.putExtra("matchingDataListJson", matchingDataListJson)
+        Log.d("MainActivity just before intent - matchingDataListJson : ", matchingDataListJson)
         startActivity(intent)
     }
 

@@ -3,74 +3,69 @@ package com.example.runrun
 
 import android.os.Bundle
 import android.util.Log
-import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import org.xmlpull.v1.XmlPullParserException
 import java.io.IOException
 import java.io.InputStream
 import java.net.HttpURLConnection
-import java.net.SocketException
 import java.net.SocketTimeoutException
 import java.net.URL
 import kotlin.concurrent.thread
-import kotlin.math.log
 
 class NetworkActivity : AppCompatActivity() {
-
-    //private val serviceKey = BuildConfig.SERVICE_KEY
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_network)
-        val startOrStop: String? = intent.getStringExtra("startOrStop")
-        val xmlText : TextView = findViewById(R.id.xmlTextview)
 
-        if (startOrStop == "start"){
-            thread(start = true){
-                var parsedText = loadPage()
-                runOnUiThread{
-                    xmlText.setText(parsedText)
+        val xmlText: TextView = findViewById(R.id.xmlTextview)
+
+        val startOrStop: String? = intent.getStringExtra("startOrStop")
+        val arsId: String? = intent.getStringExtra("arsId")
+        val routeId: String? = intent.getStringExtra("routeId")
+        val nodeId: String? = intent.getStringExtra("nodeId")
+
+        // default setting - 창동쌍용.성원아파트 - 노원15
+        val ord: String = arsId ?: "26"
+        val busRouteId: String = routeId ?: "109900010"
+        val stId: String = nodeId ?: "109000052"
+        Log.d("ord, busRouteId, stId의 값 : ", "$ord, $busRouteId, $stId")
+
+        if (startOrStop == "start") {
+            thread(start = true) {
+                val parsedText = loadPage(ord, busRouteId, stId)
+                runOnUiThread {
+                    xmlText.text = parsedText
                 }
             }
         }
     }
 
     companion object {
-        //val serviceKey = "serviceKey ${BuildConfig.serviceKey}"
-
+        // Static variables
         const val WIFI = "Wi-Fi"
         const val ANY = "Any"
-        const val serviceKey = BuildConfig.SERVICE_KEY
-        const val BUS_URL =
-            "http://ws.bus.go.kr/api/rest/arrive/getArrInfoByRoute?ServiceKey=$serviceKey&stId=109000052&busRouteId=109900010&ord=26"
-        // Whether there is a Wi-Fi connection.
-        private var wifiConnected = true //true로 바꿔둠
-
-        // Whether there is a mobile connection.
-        private var mobileConnected = false
-
-        // Whether the display should be refreshed.
-        //var refreshDisplay = true
-
-        // The user's current network preference setting.
-        var sPref: String? = ANY //ANY로 바꿔둠
     }
 
-    private fun loadPage(): String? {
-        var parsedString:String? = null
-        if (sPref.equals(ANY) && (wifiConnected || mobileConnected)) {
-            parsedString = downloadXml(BUS_URL) // 연습이라 사실상 여기서 끝나게 만들었다. 일단은 말이지
-            if (parsedString == null){
-                Log.d("NetworkActivity : ---", "loadPage()에서 parsedString이 null을 받음")
-            }
+    private fun loadPage(ord: String, busRouteId: String, stId: String): String? {
+        val urlString = buildBusUrl(ord, busRouteId, stId)
 
-        } else if (sPref.equals(WIFI) && wifiConnected) {
-            downloadXml(BUS_URL)
-        } else {
-            // Show error. 에러 시 사용자에게 무엇을 보여줄 것인가?
+        return try {
+            val parsedString = downloadXml(urlString)
+            parsedString
+        } catch (e: Exception) {
+            Log.e("NetworkActivity", "Error loading page", e)
+            null
         }
-        return parsedString
+    }
+
+    private fun buildBusUrl(ord: String, busRouteId: String, stId: String): String {
+        return "http://ws.bus.go.kr/api/rest/arrive/getArrInfoByRoute" +
+                "?ServiceKey=${BuildConfig.SERVICE_KEY}" +
+                "&stId=$stId" +
+                "&busRouteId=$busRouteId" +
+                "&ord=$ord"
     }
 
     private fun downloadXml(urls: String) : String? {

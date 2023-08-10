@@ -11,15 +11,6 @@
     tools:context=".MainActivity">
 
 
-    <Button
-        android:id="@+id/xml_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="130sp"
-        android:layout_marginTop="130sp"
-        android:text="@string/xml_button"
-        android:textAlignment="viewStart" />
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/enterConstraint"
         android:layout_width="match_parent"
