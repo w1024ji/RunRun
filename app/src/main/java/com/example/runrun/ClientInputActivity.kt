@@ -7,47 +7,52 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.Spinner
 
-class ClientInputActivity : AppCompatActivity() {private lateinit var daySpinner: Spinner
-    private lateinit var adapter: ArrayAdapter<String>
-    private val daysOfWeek: Array<String> by lazy {
-        resources.getStringArray(R.array.days_of_week)
-    }
+class ClientInputActivity : AppCompatActivity() {
+
+    private lateinit var nextButton: Button  // Declare nextButton as a class property
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.client_input)
 
-        val nextButton : Button = findViewById(R.id.nextButton)
-        daySpinner = findViewById(R.id.daySpinner)
-        adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, daysOfWeek)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        daySpinner.adapter = adapter
+        val daySpinner: Spinner = findViewById(R.id.daySpinner)
+        val daysOfWeek = resources.getStringArray(R.array.days_of_week)
+        val dayAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, daysOfWeek)
+        dayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        setupSpinner(daySpinner, dayAdapter)
 
-        daySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        val hourSpinner: Spinner = findViewById(R.id.startHourSpinner)
+        val hours = resources.getStringArray(R.array.hour)
+        val hourAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, hours)
+        hourAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        setupSpinner(hourSpinner, hourAdapter)
+
+        val minuteSpinner: Spinner = findViewById(R.id.endMinuteSpinner)
+        val minutes = resources.getStringArray(R.array.minute)
+        val minuteAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, minutes)
+        minuteAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        setupSpinner(minuteSpinner, minuteAdapter)
+
+        nextButton = findViewById(R.id.nextButton)
+    }
+
+    private fun setupSpinner(spinner: Spinner, adapter: ArrayAdapter<String>) {
+        spinner.adapter = adapter
+
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: android.view.View?, position: Int, id: Long) {
-                val selectedDay = daysOfWeek[position]
-                // You can use the 'selectedDay' variable here or elsewhere in your activity
+                val selectedItem = adapter.getItem(position) ?: ""
+                // Your logic based on the selected item
 
-                // Update the Spinner selection to the chosen day
-                adapter.remove("None")
-                adapter.insert(selectedDay, 0)
-                daySpinner.setSelection(0)
-
-                // Enable the button since something is selected
-                nextButton.isEnabled = true
+                // Enable or disable your button based on the selected item
+                nextButton.isEnabled = selectedItem.isNotEmpty()
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
-                // Disable the button since nothing is selected
+                // Disable the button if nothing is selected
                 nextButton.isEnabled = false
             }
         }
-
-        // Set the initial selection to "None"
-        val initialSelection = "None"
-        val initialPosition = daysOfWeek.indexOf(initialSelection)
-        if (initialPosition >= 0) {
-            daySpinner.setSelection(initialPosition)
-        }
     }
+
 }
