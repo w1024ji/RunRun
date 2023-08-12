@@ -7,7 +7,6 @@ import org.xmlpull.v1.XmlPullParserException
 import java.io.IOException
 import java.io.InputStream
 
-// We don't use namespaces
 private val ns: String? = null
 
 class BusRouteListXmlParser {
@@ -26,18 +25,16 @@ class BusRouteListXmlParser {
 
     @Throws(XmlPullParserException::class, IOException::class)
     private fun readFeed(parser: XmlPullParser): List<ItemList> {
-        var entries = mutableListOf<ItemList>() // Returns an empty new MutableList.
-        parser.require(XmlPullParser.START_TAG, ns, "ServiceResult") // 최상단 태그 <ServiceResult>
-        while (parser.next() != XmlPullParser.END_DOCUMENT) { // END_TAG에서 END_DOCUMENT로 수정함
+        var entries = mutableListOf<ItemList>()
+        parser.require(XmlPullParser.START_TAG, ns, "ServiceResult")
+        while (parser.next() != XmlPullParser.END_DOCUMENT) {
             if (parser.eventType != XmlPullParser.START_TAG) {
                 continue
             }
             if (parser.name == "comMsgHeader") {
-
                 entries.add(readItemList(parser))
             } else {
-                Log.d("readFeed()에서 else경우 발생 : ", "skip(parser)") // 발생 안 함
-                //skip(parser)
+                Log.d("readFeed()", "else occur")
             }
         }
 
@@ -58,9 +55,8 @@ class BusRouteListXmlParser {
         var stNm: String? = null
         var arrmsg1: String? = null
         var arrmsg2: String? = null
+
         while (parser.next() != XmlPullParser.END_DOCUMENT) {
-            Log.d("Parser event type: ", "${parser.eventType}")
-            Log.d("Current tag name: ", "${parser.name}")
             if (parser.eventType == XmlPullParser.START_TAG) {
                 when (parser.name) {
                     "rtNm" -> rtNm = read(parser)
@@ -69,7 +65,8 @@ class BusRouteListXmlParser {
                     "arrmsg2" -> arrmsg2 = read(parser)
                     else -> continue
                 }
-            } else {
+            }
+            else {
                 continue
             }
         }

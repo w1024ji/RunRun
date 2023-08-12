@@ -21,31 +21,24 @@ class NetworkActivity : AppCompatActivity() {
 
         val xmlText: TextView = findViewById(R.id.xmlTextview)
 
-        val startOrStop: String? = intent.getStringExtra("startOrStop")
-        val arsId: String? = intent.getStringExtra("arsId")
+        val ordId: String? = intent.getStringExtra("ordId")
         val routeId: String? = intent.getStringExtra("routeId")
         val nodeId: String? = intent.getStringExtra("nodeId")
 
         // default setting - 창동쌍용.성원아파트 - 노원15
-        val ord: String = arsId ?: "26"
+        val ord: String = ordId ?: "26"
         val busRouteId: String = routeId ?: "109900010"
         val stId: String = nodeId ?: "109000052"
         Log.d("ord, busRouteId, stId의 값 : ", "$ord, $busRouteId, $stId")
 
-        if (startOrStop == "start") {
-            thread(start = true) {
-                val parsedText = loadPage(ord, busRouteId, stId)
-                runOnUiThread {
-                    xmlText.text = parsedText
-                }
+
+        thread(start = true) {
+            val parsedText = loadPage(ord, busRouteId, stId)
+            runOnUiThread {
+                xmlText.text = parsedText
             }
         }
-    }
 
-    companion object {
-        // Static variables
-        const val WIFI = "Wi-Fi"
-        const val ANY = "Any"
     }
 
     private fun loadPage(ord: String, busRouteId: String, stId: String): String? {

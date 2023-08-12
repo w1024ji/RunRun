@@ -136,15 +136,15 @@ class RawMapViewDemoActivity : AppCompatActivity(), OnMapReadyCallback, OnMapsSd
             // LinkedTreeMap
 
             if (clickedMarkerData != null) {
-                val arsId = clickedMarkerData["ARS_ID"]?.toString() ?: ""
+                val ordId = clickedMarkerData["순번"]?.toString() ?: ""
                 val routeId = clickedMarkerData["ROUTE_ID"]?.toString() ?: ""
                 val nodeId = clickedMarkerData["NODE_ID"]?.toString() ?: ""
 
-                Log.d("보내기 전 arsId, routeId, nodeId의 값 : ", "$arsId, $routeId, $nodeId")
+                Log.d("보내기 전 ordId, routeId, nodeId의 값 : ", "$ordId, $routeId, $nodeId")
 
                 val intent = Intent(this, NetworkActivity::class.java)
-                intent.putExtra("startOrStop", "start")
-                intent.putExtra("arsId", arsId)
+
+                intent.putExtra("ordId", ordId)
                 intent.putExtra("routeId", routeId)
                 intent.putExtra("nodeId", nodeId)
                 startActivity(intent)
