@@ -107,40 +107,30 @@ class RawMapViewDemoActivity : AppCompatActivity(), OnMapReadyCallback, OnMapsSd
             val latitude = data["Y좌표"].toString().toDoubleOrNull() ?: 0.0
             val longitude = data["X좌표"].toString().toDoubleOrNull() ?: 0.0
             val location = LatLng(latitude, longitude)
-            Log.d("MarkerDebug", "Adding marker at $longitude, $latitude")
-            // Adding marker at 127.0472314, 37.6610589
-            // Adding marker at 127.0473835, 37.66086168
 
             val marker = map.addMarker(MarkerOptions().position(location))
-            marker?.tag = data // Attach data to the marker
-            Log.d("marker 값 : ", "$marker")
-            // com.google.android.gms.maps.model.Marker@e730475
+            marker?.tag = data
 
-            boundsBuilder.include(location) // Include each marker's location in the bounds
+            boundsBuilder.include(location)
         }
 
         val bounds = boundsBuilder.build()
-        val padding = resources.getDimensionPixelSize(R.dimen.map_padding) // Adjust padding as needed
-        Log.d("map_padding 값 : ", "$padding") // 126
+        val padding = resources.getDimensionPixelSize(R.dimen.map_padding)
+        Log.d("map_padding 값 : ", "$padding") // 656
 
         // Set the camera to the bounds and apply padding for a good visual result
         map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding))
 
         map.setOnMarkerClickListener { marker ->
-            Log.d("setOnMarkerClickListener의 marker 값 : ", "$marker")
-            // com.google.android.gms.maps.model.Marker@ed44d2d
 
             @Suppress("UNCHECKED_CAST")
             val clickedMarkerData = marker.tag as? Map<String, Any>
-            Log.d("MarkerData", "Type of clickedMarkerData: ${clickedMarkerData?.javaClass?.simpleName}")
-            // LinkedTreeMap
+            Log.d("MarkerData", "Type of clickedMarkerData: ${clickedMarkerData?.javaClass?.simpleName}") // LinkedTreeMap
 
             if (clickedMarkerData != null) {
                 val ordId = clickedMarkerData["순번"]?.toString() ?: ""
                 val routeId = clickedMarkerData["ROUTE_ID"]?.toString() ?: ""
                 val nodeId = clickedMarkerData["NODE_ID"]?.toString() ?: ""
-
-                Log.d("보내기 전 ordId, routeId, nodeId의 값 : ", "$ordId, $routeId, $nodeId")
 
                 val intent = Intent(this, NetworkActivity::class.java)
 
