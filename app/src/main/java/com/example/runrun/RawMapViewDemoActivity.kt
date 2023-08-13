@@ -116,7 +116,7 @@ class RawMapViewDemoActivity : AppCompatActivity(), OnMapReadyCallback, OnMapsSd
 
         val bounds = boundsBuilder.build()
         val padding = resources.getDimensionPixelSize(R.dimen.map_padding)
-        Log.d("map_padding 값 : ", "$padding") // 656
+        Log.d("map_padding 값 : ", "$padding") // 683
 
         // Set the camera to the bounds and apply padding for a good visual result
         map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding))

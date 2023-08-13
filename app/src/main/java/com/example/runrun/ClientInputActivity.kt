@@ -1,16 +1,16 @@
 package com.example.runrun
 
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.Spinner
+import android.widget.*
+import androidx.annotation.RequiresApi
 
 class ClientInputActivity : AppCompatActivity() {
 
     private lateinit var nextButton: Button  // Declare nextButton as a class property
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.client_input)
@@ -33,7 +33,23 @@ class ClientInputActivity : AppCompatActivity() {
         minuteAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         setupSpinner(minuteSpinner, minuteAdapter)
 
+        val hourSpinner2: Spinner = findViewById(R.id.startHourSpinner2)
+        hourAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        setupSpinner(hourSpinner2, hourAdapter)
+
+        val minuteSpinner2: Spinner = findViewById(R.id.endMinuteSpinner2)
+        minuteAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        setupSpinner(minuteSpinner2, minuteAdapter)
+
+        val nameOfNotify : TextView = findViewById(R.id.nameOfNotify)
         nextButton = findViewById(R.id.nextButton)
+
+        val itemList = intent.getParcelableArrayListExtra("itemList", BusRouteListXmlParser.ItemList::class.java)
+        if (itemList != null) {
+            for (item in itemList) {
+                // Access individual fields: item.rtNm, item.stNm, etc.
+            }
+        }
     }
 
     private fun setupSpinner(spinner: Spinner, adapter: ArrayAdapter<String>) {

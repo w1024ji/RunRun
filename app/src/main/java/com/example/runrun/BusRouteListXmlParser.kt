@@ -1,5 +1,7 @@
 package com.example.runrun
 
+import android.os.Parcel
+import android.os.Parcelable
 import android.util.Log
 import android.util.Xml
 import org.xmlpull.v1.XmlPullParser
@@ -46,7 +48,36 @@ class BusRouteListXmlParser {
         var stNm: String?,
         var arrmsg1: String?,
         var arrmsg2: String?
-    )
+    ) : Parcelable {
+        constructor(parcel: Parcel) : this(
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString()
+        ) {
+        }
+
+        override fun describeContents(): Int {
+            return 0
+        }
+
+        override fun writeToParcel(parcel: Parcel, flags: Int) {
+            parcel.writeString(rtNm)
+            parcel.writeString(stNm)
+            parcel.writeString(arrmsg1)
+            parcel.writeString(arrmsg2)
+        }
+
+        companion object CREATOR : Parcelable.Creator<ItemList> {
+            override fun createFromParcel(parcel: Parcel): ItemList {
+                return ItemList(parcel)
+            }
+
+            override fun newArray(size: Int): Array<ItemList?> {
+                return arrayOfNulls(size)
+            }
+        }
+    }
 
     @Throws(IOException::class, XmlPullParserException::class)
     private fun readItemList(parser: XmlPullParser): ItemList {

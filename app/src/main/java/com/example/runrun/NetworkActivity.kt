@@ -1,6 +1,7 @@
 package com.example.runrun
 
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
@@ -33,25 +34,33 @@ class NetworkActivity : AppCompatActivity() {
 
 
         thread(start = true) {
-            val parsedText = loadPage(ord, busRouteId, stId)
+            val entries = loadPage(ord, busRouteId, stId)
             runOnUiThread {
-                xmlText.text = parsedText
+                if (entries != null) {
+                    val intent = Intent(this@NetworkActivity, ClientInputActivity::class.java)
+                    intent.putParcelableArrayListExtra("itemList", ArrayList(entries))
+                    startActivity(intent)
+                } else {
+                    // Handle error or no data scenario
+                }
             }
         }
 
+
+
     }
 
-    private fun loadPage(ord: String, busRouteId: String, stId: String): String? {
+    private fun loadPage(ord: String, busRouteId: String, stId: String): List<BusRouteListXmlParser.ItemList>? {
         val urlString = buildBusUrl(ord, busRouteId, stId)
 
         return try {
-            val parsedString = downloadXml(urlString)
-            parsedString
+            downloadXml(urlString)
         } catch (e: Exception) {
             Log.e("NetworkActivity", "Error loading page", e)
             null
         }
     }
+
 
     private fun buildBusUrl(ord: String, busRouteId: String, stId: String): String {
         return "http://ws.bus.go.kr/api/rest/arrive/getArrInfoByRoute" +
@@ -61,27 +70,26 @@ class NetworkActivity : AppCompatActivity() {
                 "&ord=$ord"
     }
 
-    private fun downloadXml(urls: String) : String? {
-        var result: String? = try {
+    private fun downloadXml(urls: String): List<BusRouteListXmlParser.ItemList>? {
+        val result: List<BusRouteListXmlParser.ItemList>? = try {
             loadXmlFromNetwork(urls)
         } catch (e: IOException) {
-            resources.getString(R.string.connection_error)
+            Log.e("NetworkActivity", "Connection error", e)
+            null
         } catch (e: XmlPullParserException) {
-            resources.getString(R.string.xml_error)
+            Log.e("NetworkActivity", "XML error", e)
+            null
         }
         return result
-        }
+    }
+
 
     @Throws(XmlPullParserException::class, IOException::class)
-    private fun loadXmlFromNetwork(urlString: String): String {
-
-        if (downloadUrl(urlString) == null){
-            Log.d("NetworkActivity : ---", "loadXmlFromNetwork()에서 null 발생")
-        }
-        //null이 아닌 거 확인됨
-        val entries:List<BusRouteListXmlParser.ItemList> = BusRouteListXmlParser().parse(downloadUrl(urlString))
-        return entries.toString()
+    private fun loadXmlFromNetwork(urlString: String): List<BusRouteListXmlParser.ItemList> {
+        val entries = BusRouteListXmlParser().parse(downloadUrl(urlString))
+        return entries
     }
+
 
     // Given a string representation of a URL, sets up a connection and gets an input stream.
     @Throws(IOException::class)
