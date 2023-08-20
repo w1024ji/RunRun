@@ -20,8 +20,6 @@ class NetworkActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_network)
 
-        val xmlText: TextView = findViewById(R.id.xmlTextview)
-
         val ordId: String? = intent.getStringExtra("ordId")
         val routeId: String? = intent.getStringExtra("routeId")
         val nodeId: String? = intent.getStringExtra("nodeId")
@@ -45,9 +43,6 @@ class NetworkActivity : AppCompatActivity() {
                 }
             }
         }
-
-
-
     }
 
     private fun loadPage(ord: String, busRouteId: String, stId: String): List<BusRouteListXmlParser.ItemList>? {

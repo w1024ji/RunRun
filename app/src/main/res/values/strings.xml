@@ -20,6 +20,13 @@
     <string name="selected_station_name">Selected Station Name</string>
     <string name="pick_a_day">pick a day</string>
     <string name="pick_a_time">pick a time</string>
-    <string name="name_of_this_notification">name of this notification</string>
+    <string name="name_of_notification">name of notification</string>
     <string name="next">NEXT</string>
+    <string name="monday">Monday</string>
+    <string name="tuesday">Tuesday</string>
+    <string name="wednesday">Wednesday</string>
+    <string name="thursday">Thursday</string>
+    <string name="friday">Friday</string>
+    <string name="saturday">Saturday</string>
+    <string name="sunday">Sunday</string>
 </resources>
