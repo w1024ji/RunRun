@@ -16,6 +16,7 @@ package com.example.runrun
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.ViewTreeObserver
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
@@ -116,10 +117,18 @@ class RawMapViewDemoActivity : AppCompatActivity(), OnMapReadyCallback, OnMapsSd
 
         val bounds = boundsBuilder.build()
         val padding = resources.getDimensionPixelSize(R.dimen.map_padding)
-        Log.d("map_padding 값 : ", "$padding") // 683
+        Log.d("map_padding 값 : ", "$padding")
 
-        // Set the camera to the bounds and apply padding for a good visual result
-        map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding))
+        // Using ViewTreeObserver to wait for layout
+        mMapView?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            @Suppress("DEPRECATION")
+            override fun onGlobalLayout() {
+                mMapView?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+
+                // Now that layout has occurred, we can safely move the camera
+                map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding))
+            }
+        })
 
         map.setOnMarkerClickListener { marker ->
 
@@ -141,7 +150,6 @@ class RawMapViewDemoActivity : AppCompatActivity(), OnMapReadyCallback, OnMapsSd
             }
             false // Return false to allow the default behavior (info window to open)
         }
-
     }
 
     companion object {

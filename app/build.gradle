@@ -58,7 +58,7 @@ dependencies {
 
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'com.google.android.material:material:1.9.0'
+    implementation 'com.google.android.material:material:1.4.0'
     implementation 'com.google.android.gms:play-services-places:17.0.0'
     implementation 'com.google.android.gms:play-services-fitness:21.1.0'
     implementation 'com.google.android.libraries.places:places:3.2.0'
@@ -66,7 +66,7 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
      //코루틴 쓰려고 추가함
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.0-RC")//둘 중 뭐를 써야할까
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.0-RC")
 
     // Import the Firebase BoM
     implementation platform('com.google.firebase:firebase-bom:32.2.0')

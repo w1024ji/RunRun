@@ -30,75 +30,74 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/selected_bus" />
 
-    <!--    <com.google.android.material.chip.ChipGroup-->
-<!--        android:id="@+id/chipGroup"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginStart="32dp"-->
-<!--        android:layout_marginTop="12dp"-->
-<!--        android:layout_marginBottom="12dp"-->
-<!--        app:layout_constraintStart_toEndOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/day"-->
-<!--        app:singleSelection="false"-->
-<!--        app:singleLine="false">-->
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/chipGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/day"
+        app:singleLine="false"
+        app:singleSelection="false">
 
-<!--        <com.google.android.material.chip.Chip-->
-<!--            android:id="@+id/mondayChip"-->
-<!--            android:layout_width="100dp"-->
-<!--            android:layout_height="32dp"-->
-<!--            android:text="@string/monday"-->
-<!--            app:chipBackgroundColor="@color/chip_background_selector"-->
-<!--            app:checkable="true" />-->
+        <com.google.android.material.chip.Chip
+            android:id="@+id/mondayChip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/monday"
+            android:checkable="true"
+            app:chipBackgroundColor="@color/chip_background_selector" />
 
-<!--        <com.google.android.material.chip.Chip-->
-<!--            android:id="@+id/tuesdayChip"-->
-<!--            android:layout_width="100dp"-->
-<!--            android:layout_height="32dp"-->
-<!--            android:text="@string/tuesday"-->
-<!--            app:chipBackgroundColor="@color/chip_background_selector"-->
-<!--            app:checkable="true" />-->
+        <com.google.android.material.chip.Chip
+            android:id="@+id/tuesdayChip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tuesday"
+            android:checkable="true"
+            app:chipBackgroundColor="@color/chip_background_selector" />
 
-<!--        <com.google.android.material.chip.Chip-->
-<!--            android:id="@+id/wednesdayChip"-->
-<!--            android:layout_width="110dp"-->
-<!--            android:layout_height="32dp"-->
-<!--            android:text="@string/wednesday"-->
-<!--            app:chipBackgroundColor="@color/chip_background_selector"-->
-<!--            app:checkable="true" />-->
+        <com.google.android.material.chip.Chip
+            android:id="@+id/wednesdayChip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/wednesday"
+            android:checkable="true"
+            app:chipBackgroundColor="@color/chip_background_selector" />
 
-<!--        <com.google.android.material.chip.Chip-->
-<!--            android:id="@+id/thursdayChip"-->
-<!--            android:layout_width="100dp"-->
-<!--            android:layout_height="32dp"-->
-<!--            android:text="@string/thursday"-->
-<!--            app:chipBackgroundColor="@color/chip_background_selector"-->
-<!--            app:checkable="true" />-->
+        <com.google.android.material.chip.Chip
+            android:id="@+id/thursdayChip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/thursday"
+            android:checkable="true"
+            app:chipBackgroundColor="@color/chip_background_selector" />
 
-<!--        <com.google.android.material.chip.Chip-->
-<!--            android:id="@+id/fridayChip"-->
-<!--            android:layout_width="100dp"-->
-<!--            android:layout_height="32dp"-->
-<!--            android:text="@string/friday"-->
-<!--            app:chipBackgroundColor="@color/chip_background_selector"-->
-<!--            app:checkable="true" />-->
+        <com.google.android.material.chip.Chip
+            android:id="@+id/fridayChip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/friday"
+            android:checkable="true"
+            app:chipBackgroundColor="@color/chip_background_selector" />
 
-<!--        <com.google.android.material.chip.Chip-->
-<!--            android:id="@+id/saturdayChip"-->
-<!--            android:layout_width="100dp"-->
-<!--            android:layout_height="32dp"-->
-<!--            android:text="@string/saturday"-->
-<!--            app:chipBackgroundColor="@color/chip_background_selector"-->
-<!--            app:checkable="true" />-->
+        <com.google.android.material.chip.Chip
+            android:id="@+id/saturdayChip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/saturday"
+            android:checkable="true"
+            app:chipBackgroundColor="@color/chip_background_selector" />
 
-<!--        <com.google.android.material.chip.Chip-->
-<!--            android:id="@+id/sundayChip"-->
-<!--            android:layout_width="100dp"-->
-<!--            android:layout_height="32dp"-->
-<!--            android:text="@string/sunday"-->
-<!--            app:chipBackgroundColor="@color/chip_background_selector"-->
-<!--            app:checkable="true" />-->
+        <com.google.android.material.chip.Chip
+            android:id="@+id/sundayChip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sunday"
+            android:checkable="true"
+            app:chipBackgroundColor="@color/chip_background_selector" />
 
-<!--    </com.google.android.material.chip.ChipGroup>-->
+    </com.google.android.material.chip.ChipGroup>
 
     <TextView
         android:id="@+id/day"
@@ -111,36 +110,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.chip.ChipGroup
-        android:id="@+id/chipGroup"
-        app:chipSpacingHorizontal="15dp"
-        app:singleSelection="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/day">
-
-        <com.google.android.material.chip.Chip
-            style="@style/Widget.MaterialComponents.Chip.Choice"
-            android:id="@+id/chip01"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:chipMinHeight="5dp"
-            app:chipStartPadding="10dp"
-            app:chipEndPadding="10dp"
-            app:chipBackgroundColor="@color/teal_200"
-            android:textSize="18sp"
-            android:textColor="@color/white"
-            android:text="Chip 1"/>
-
-    </com.google.android.material.chip.ChipGroup>
-
     <TextView
         android:id="@+id/time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="40dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="32dp"
         android:text="@string/pick_a_time"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -150,8 +125,8 @@
         android:id="@+id/startHourSpinner"
         android:layout_width="100dp"
         android:layout_height="48dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="56dp"
         app:layout_constraintStart_toEndOf="@+id/time"
         app:layout_constraintTop_toBottomOf="@+id/chipGroup"
         tools:ignore="SpeakableTextPresentCheck" />
@@ -160,8 +135,8 @@
         android:id="@+id/endMinuteSpinner"
         android:layout_width="100dp"
         android:layout_height="48dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="20dp"
+        android:layout_marginTop="56dp"
+        android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/chipGroup"
         tools:ignore="SpeakableTextPresentCheck" />
@@ -170,8 +145,8 @@
         android:id="@+id/startHourSpinner2"
         android:layout_width="100dp"
         android:layout_height="48dp"
-        android:layout_marginStart="168dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginStart="152dp"
+        android:layout_marginTop="44dp"
         android:minHeight="48dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/startHourSpinner"
@@ -181,7 +156,7 @@
         android:id="@+id/endMinuteSpinner2"
         android:layout_width="100dp"
         android:layout_height="48dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="44dp"
         android:layout_marginEnd="20dp"
         android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="parent"
