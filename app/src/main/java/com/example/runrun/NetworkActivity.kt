@@ -35,7 +35,7 @@ class NetworkActivity : AppCompatActivity() {
             val entries = loadPage(ord, busRouteId, stId)
             runOnUiThread {
                 if (entries != null) {
-                    val intent = Intent(this@NetworkActivity, ClientInputActivity::class.java)
+                    val intent = Intent(this@NetworkActivity, SetAlarmActivity::class.java)
                     intent.putParcelableArrayListExtra("itemList", ArrayList(entries))
                     startActivity(intent)
                 } else {
