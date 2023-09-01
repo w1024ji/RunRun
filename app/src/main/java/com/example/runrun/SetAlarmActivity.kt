@@ -49,7 +49,7 @@ class SetAlarmActivity : AppCompatActivity() {
         startTimeTextView.setOnClickListener {
             val timePickerDialog = TimePickerDialog(
                 this,
-                R.style.SpinnerTimePickerDialogTheme,  // Apply the custom style
+                R.style.SpinnerTimePickerDialogTheme,
                 { _, hourOfDay, minute ->
                     startHour = hourOfDay
                     startMinute = minute
@@ -65,7 +65,7 @@ class SetAlarmActivity : AppCompatActivity() {
         endTimeTextView.setOnClickListener {
             val timePickerDialog = TimePickerDialog(
                 this,
-                R.style.SpinnerTimePickerDialogTheme,  // Apply the custom style
+                R.style.SpinnerTimePickerDialogTheme,
                 { _, hourOfDay, minute ->
                     endHour = hourOfDay
                     endMinute = minute
@@ -85,13 +85,13 @@ class SetAlarmActivity : AppCompatActivity() {
                 val chip = dayChipGroup.getChildAt(i) as Chip
                 if (chip.isChecked) {
                     when (chip.id) {
-                        R.id.mondayChip -> selectedDays.add(Calendar.MONDAY)
-                        R.id.tuesdayChip -> selectedDays.add(Calendar.TUESDAY)
-                        R.id.wednesdayChip -> selectedDays.add(Calendar.WEDNESDAY)
-                        R.id.thursdayChip -> selectedDays.add(Calendar.THURSDAY)
-                        R.id.fridayChip -> selectedDays.add(Calendar.FRIDAY)
-                        R.id.saturdayChip -> selectedDays.add(Calendar.SATURDAY)
-                        R.id.sundayChip -> selectedDays.add(Calendar.SUNDAY)
+                        R.id.sundayChip -> selectedDays.add(Calendar.SUNDAY) // 1
+                        R.id.mondayChip -> selectedDays.add(Calendar.MONDAY) // 2
+                        R.id.tuesdayChip -> selectedDays.add(Calendar.TUESDAY) // 3
+                        R.id.wednesdayChip -> selectedDays.add(Calendar.WEDNESDAY) // 4
+                        R.id.thursdayChip -> selectedDays.add(Calendar.THURSDAY) // 5
+                        R.id.fridayChip -> selectedDays.add(Calendar.FRIDAY) // 6
+                        R.id.saturdayChip -> selectedDays.add(Calendar.SATURDAY) // 7
                     }
                 }
             }
@@ -106,35 +106,46 @@ class SetAlarmActivity : AppCompatActivity() {
 
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-        // Intent for starting the alarm
         val startIntent = Intent(this, AlarmReceiver::class.java)
         val startPendingIntent = PendingIntent.getBroadcast(this, 0, startIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
-        // Intent for stopping the alarm
         val stopIntent = Intent(this, StopAlarmReceiver::class.java)
         val stopPendingIntent = PendingIntent.getBroadcast(this, 1, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-
-        // Set the alarm to start and end at the selected times
-        val startCalendar: Calendar = Calendar.getInstance().apply {
-            timeInMillis = System.currentTimeMillis()
-            set(Calendar.HOUR_OF_DAY, startHour)
-            set(Calendar.MINUTE, startMinute)
-        }
-
-        val endCalendar: Calendar = Calendar.getInstance().apply {
-            timeInMillis = System.currentTimeMillis()
-            set(Calendar.HOUR_OF_DAY, endHour)
-            set(Calendar.MINUTE, endMinute)
-        }
 
         for (day in days) {
             Log.d("SetAlarmActivity", "Scheduling alarm for day: $day")
 
-            startCalendar.set(Calendar.DAY_OF_WEEK, day)
-            endCalendar.set(Calendar.DAY_OF_WEEK, day)
-            Log.d("scheduleAlarm", "startCalendar : $startCalendar, endCalendar : $endCalendar")
+            val now = Calendar.getInstance()
 
-            // Schedule the alarms
+            val startCalendar: Calendar = now.clone() as Calendar
+            startCalendar.set(Calendar.DAY_OF_WEEK, day)
+            startCalendar.set(Calendar.HOUR_OF_DAY, startHour)
+            startCalendar.set(Calendar.MINUTE, startMinute)
+            startCalendar.set(Calendar.SECOND, 0)
+            startCalendar.set(Calendar.MILLISECOND, 0)
+
+            // Ensure we're setting the alarm for the next occurrence of this time.
+            if (startCalendar.before(now)) {
+                startCalendar.add(Calendar.WEEK_OF_YEAR, 1)
+            }
+
+            val endCalendar: Calendar = now.clone() as Calendar
+            endCalendar.set(Calendar.DAY_OF_WEEK, day)
+            endCalendar.set(Calendar.HOUR_OF_DAY, endHour)
+            endCalendar.set(Calendar.MINUTE, endMinute)
+            endCalendar.set(Calendar.SECOND, 0)
+            endCalendar.set(Calendar.MILLISECOND, 0)
+
+            // Same here, make sure the endCalendar is for the next occurrence
+            if (endCalendar.before(now)) {
+                endCalendar.add(Calendar.WEEK_OF_YEAR, 1)
+            }
+
+            // Log the Unix timestamps
+            Log.d("SetAlarmActivity", "Start time in millis: ${startCalendar.timeInMillis}")
+            Log.d("SetAlarmActivity", "End time in millis: ${endCalendar.timeInMillis}")
+
+            // schedules a repeating alarm using Android's AlarmManager
             alarmManager.setRepeating(
                 AlarmManager.RTC_WAKEUP,
                 startCalendar.timeInMillis,

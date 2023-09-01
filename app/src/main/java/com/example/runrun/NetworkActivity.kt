@@ -28,7 +28,7 @@ class NetworkActivity : AppCompatActivity() {
         val ord: String = ordId ?: "26"
         val busRouteId: String = routeId ?: "109900010"
         val stId: String = nodeId ?: "109000052"
-        Log.d("ord, busRouteId, stId의 값 : ", "$ord, $busRouteId, $stId")
+        Log.d("NetworkActivity.kt: ord, busRouteId, stId의 값: ", "$ord, $busRouteId, $stId")
 
 
         thread(start = true) {

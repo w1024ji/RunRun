@@ -13,7 +13,7 @@ class StopAlarmReceiver : BroadcastReceiver() {
         val notificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        // Cancel the notification with ID 1
+        // Cancel the notification with ID 3
         notificationManager.cancel(3)
         Log.d("StopAlarmReceiver", "Notification canceled")
     }
