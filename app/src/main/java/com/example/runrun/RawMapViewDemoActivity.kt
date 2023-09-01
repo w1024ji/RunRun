@@ -18,6 +18,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.ViewTreeObserver
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
@@ -141,12 +142,12 @@ class RawMapViewDemoActivity : AppCompatActivity(), OnMapReadyCallback, OnMapsSd
                 val routeId = clickedMarkerData["ROUTE_ID"]?.toString() ?: ""
                 val nodeId = clickedMarkerData["NODE_ID"]?.toString() ?: ""
 
-                val intent = Intent(this, NetworkActivity::class.java)
+                val intent = Intent(this, MyForegroundService::class.java)
 
                 intent.putExtra("ordId", ordId)
                 intent.putExtra("routeId", routeId)
                 intent.putExtra("nodeId", nodeId)
-                startActivity(intent)
+                ContextCompat.startForegroundService(this, intent)
             }
             false // Return false to allow the default behavior (info window to open)
         }

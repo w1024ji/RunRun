@@ -9,9 +9,10 @@
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
-
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
 
     <application
@@ -30,6 +31,7 @@
 
         <receiver android:name=".AlarmReceiver"/>
         <receiver android:name=".StopAlarmReceiver"/>
+        <service android:name=".MyForegroundService" />
 
         <!-- Didn't find class "androidx.core.app.CoreComponentFactory" 에러 때문에 추가함 -->
         <!-- 위에 android:usesCleartextTraffic="false" 모든 url허용을 true에서 false로 바꿈. -->

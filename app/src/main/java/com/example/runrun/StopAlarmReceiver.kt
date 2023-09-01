@@ -10,6 +10,10 @@ class StopAlarmReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         Log.d("StopAlarmReceiver", "Received stop alarm broadcast")
+
+        val serviceIntent = Intent(context, MyForegroundService::class.java)
+        context.stopService(serviceIntent)
+
         val notificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
