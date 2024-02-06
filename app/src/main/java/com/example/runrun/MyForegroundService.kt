@@ -96,7 +96,7 @@ class MyForegroundService : Service() {
             Thread {
                 try {
                     val entries = loadPage(ord, busId, stId)
-                    Log.d("entries값: ", entries.toString()) // [ItemList(rtNm=노원15, stNm=창동아이파크, arrmsg1=곧 도착, arrmsg2=null)]
+                    Log.d("entries 값: ", entries.toString()) // [ItemList(rtNm=노원15, stNm=창동아이파크, arrmsg1=곧 도착, arrmsg2=null)]
 
                     // 가져온 데이터가 비어 있지 않으면 실행
                     if ((entries != null) && entries.isNotEmpty()) {
@@ -104,7 +104,9 @@ class MyForegroundService : Service() {
                     }
 
                     val broadcastIntent = Intent()
+                    broadcastIntent.action = "UPDATE_DATA"
                     broadcastIntent.putExtra("arrmsg1", arrmsg1)
+                    Log.d("arrmsg1 값: ", arrmsg1)
                     sendBroadcast(broadcastIntent)
 
                     handler.postDelayed(this, 60000)

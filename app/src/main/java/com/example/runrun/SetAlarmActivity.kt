@@ -125,7 +125,7 @@ class SetAlarmActivity : AppCompatActivity() {
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
         // 갱신 주기 설정 (3분)
-        val intervalMillis = 3 * 60 * 1000 // 3분을 밀리초로 변환
+        val intervalMillis = 2 * 60 * 1000 // 2분을 밀리초로 변환
 
         // 시작 알람과 정지 알람에 사용될 PendingIntent 설정
         val startIntent = Intent(this, AlarmReceiver::class.java)
@@ -173,14 +173,14 @@ class SetAlarmActivity : AppCompatActivity() {
             alarmManager.setRepeating(
                 AlarmManager.RTC_WAKEUP,
                 startCalendar.timeInMillis,
-                intervalMillis.toLong(),
+                AlarmManager.INTERVAL_DAY * 7,
                 startPendingIntent
             )
 
             alarmManager.setRepeating(
                 AlarmManager.RTC_WAKEUP,
                 endCalendar.timeInMillis,
-                intervalMillis.toLong(),
+                AlarmManager.INTERVAL_DAY * 7,
                 stopPendingIntent
             )
         }

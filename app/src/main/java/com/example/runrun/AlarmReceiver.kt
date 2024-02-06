@@ -15,17 +15,27 @@ class AlarmReceiver : BroadcastReceiver() {
 
     private val channelId = "102"
     private val notificationId = 3 // Unique ID for the notification
-    var updatedArrmsg1:String? = "example"
+    var updatedArrmsg1 : String? = "example"
+    private var isInitialized = false // Flag to track initialization state
+
+
+    private fun init(context: Context) {
+        // Start MyForegroundService
+        val serviceIntent = Intent(context, MyForegroundService::class.java)
+        context.startService(serviceIntent)
+    }
 
     override fun onReceive(context: Context, intent: Intent) {
         Log.d("AlarmReceiver", "onReceive()시작. Alarm broadcast 받음")
 
-        // Start MyForegroundService
-        val serviceIntent = Intent(context, MyForegroundService::class.java)
-        context.startService(serviceIntent)
+        // Initialize if not already initialized
+        if (!isInitialized) {
+            init(context)
+            isInitialized = true
+        }
 
         var action = intent.action
-        Log.d("AlarmReceiver", "action값: $action")
+        Log.d("AlarmReceiver", "action 값: $action")
         when (action) {
             "UPDATE_DATA" -> {
                 // 액션에 따른 동작 수행
