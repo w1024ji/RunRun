@@ -18,7 +18,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.ViewTreeObserver
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
@@ -30,22 +29,25 @@ import com.google.gson.reflect.TypeToken
  * This shows how to create a simple activity with a raw MapView and add a marker to it. This
  * requires forwarding all the important lifecycle methods onto MapView.
  */
-class RawMapViewDemoActivity : AppCompatActivity(), OnMapReadyCallback, OnMapsSdkInitializedCallback {
+
+// 지도를 표시하고, 마커를 추가하며, 해당 마커를 클릭할 때 다른 화면으로 이동하는 역할을 수행하는 액티비티.
+class MapViewActivity : AppCompatActivity(), OnMapReadyCallback, OnMapsSdkInitializedCallback {
     private var mMapView: MapView? = null
     private lateinit var matchingDataList: MutableList<Map<String, Any>>
 
+    // 액티비티 초기화 및 지도 설정.
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d("MapViewActivity", "onCreate() 실행")
+
         MapsInitializer.initialize(applicationContext, MapsInitializer.Renderer.LATEST, this)
         setContentView(R.layout.google_map)
-
         val matchingDataListJson = intent.getStringExtra("matchingDataListJson")
         matchingDataList = Gson().fromJson(matchingDataListJson, object : TypeToken<MutableList<Map<String, Any>>>() {}.type)
-        Log.d("matchingDataList 값 : ", "$matchingDataListJson") // 잘 도착함
-
         setupMapView(savedInstanceState)
     }
 
+    // 지도 뷰 설정 및 초기화.
     private fun setupMapView(savedInstanceState: Bundle?) {
         var mapViewBundle = savedInstanceState?.getBundle(MAPVIEW_BUNDLE_KEY)
         if (mapViewBundle == null) {
@@ -58,9 +60,10 @@ class RawMapViewDemoActivity : AppCompatActivity(), OnMapReadyCallback, OnMapsSd
         mMapView?.getMapAsync(this)
     }
 
+    // 일반적인 라이프사이클 이벤트 처리.
     private fun handleCommonLifecycleEvents(tag: String, action: () -> Unit) {
         mMapView?.let { mapView ->
-            Log.d(tag, "Executing common lifecycle event actions.")
+            Log.d(tag, "handleCommonLifecycleEvents() 실행")
             action.invoke()
             mapView.onResume()
         }
@@ -69,21 +72,21 @@ class RawMapViewDemoActivity : AppCompatActivity(), OnMapReadyCallback, OnMapsSd
     override fun onResume() {
         super.onResume()
         handleCommonLifecycleEvents("onResume") {
-            Log.d("onResume", "Performing onResume specific actions.")
+            Log.d("MapViewActivity", "onResume 실행")
         }
     }
 
     override fun onStart() {
         super.onStart()
         handleCommonLifecycleEvents("onStart") {
-            Log.d("onStart", "Performing onStart specific actions.")
+            Log.d("MapViewActivity", "onStart 실행")
         }
     }
 
     override fun onStop() {
         super.onStop()
         handleCommonLifecycleEvents("onStop") {
-            Log.d("onStop", "Performing onStop specific actions.")
+            Log.d("MapViewActivity", "onStop 실행")
         }
     }
 
@@ -102,23 +105,22 @@ class RawMapViewDemoActivity : AppCompatActivity(), OnMapReadyCallback, OnMapsSd
         mMapView?.onLowMemory()
     }
 
+    // 지도가 준비되었을 때 호출되는 콜백으로, 마커를 추가하고 지도를 이동시키는 작업 수행.
     override fun onMapReady(map: GoogleMap) {
+        Log.d("MapViewActivity", "onMapReady() 실행")
         val boundsBuilder = LatLngBounds.Builder() // Create a bounds builder to include all markers
 
         for (data in matchingDataList) {
             val latitude = data["Y좌표"].toString().toDoubleOrNull() ?: 0.0
             val longitude = data["X좌표"].toString().toDoubleOrNull() ?: 0.0
             val location = LatLng(latitude, longitude)
-
             val marker = map.addMarker(MarkerOptions().position(location))
             marker?.tag = data
-
             boundsBuilder.include(location)
         }
 
         val bounds = boundsBuilder.build()
         val padding = resources.getDimensionPixelSize(R.dimen.map_padding)
-        Log.d("map_padding 값 : ", "$padding")
 
         // Using ViewTreeObserver to wait for layout
         mMapView?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
@@ -131,23 +133,18 @@ class RawMapViewDemoActivity : AppCompatActivity(), OnMapReadyCallback, OnMapsSd
             }
         })
 
+        // 마커를 클릭하면
         map.setOnMarkerClickListener { marker ->
-
             @Suppress("UNCHECKED_CAST")
             val clickedMarkerData = marker.tag as? Map<String, Any>
-            Log.d("MarkerData", "Type of clickedMarkerData: ${clickedMarkerData?.javaClass?.simpleName}") // LinkedTreeMap
-
             if (clickedMarkerData != null) {
-                val ordId = clickedMarkerData["순번"]?.toString() ?: ""
-                val routeId = clickedMarkerData["ROUTE_ID"]?.toString() ?: ""
-                val nodeId = clickedMarkerData["NODE_ID"]?.toString() ?: ""
+                val intent = Intent(this, SetAlarmActivity::class.java)
+                val busDataJson = Gson().toJson(clickedMarkerData)
+                Log.d("SetAlarmActivity에 넘기는 데이터: ", "busDataJson: $busDataJson") // SetAlarmActivity에 뭘 넘기는 건지
+                intent.putExtra("busData", busDataJson)
 
-                val intent = Intent(this, MyForegroundService::class.java)
-
-                intent.putExtra("ordId", ordId)
-                intent.putExtra("routeId", routeId)
-                intent.putExtra("nodeId", nodeId)
-                ContextCompat.startForegroundService(this, intent)
+                // SetAlarmActivity 시작
+                startActivity(intent)
             }
             false // Return false to allow the default behavior (info window to open)
         }
@@ -157,6 +154,7 @@ class RawMapViewDemoActivity : AppCompatActivity(), OnMapReadyCallback, OnMapsSd
         private const val MAPVIEW_BUNDLE_KEY = BuildConfig.GOOGLE_MAP_API
     }
 
+    //  Google Maps SDK 초기화 완료 시 호출되는 콜백.
     override fun onMapsSdkInitialized(renderer: MapsInitializer.Renderer) {
         when (renderer) {
             MapsInitializer.Renderer.LATEST -> Log.d("MapsDemo", "The latest version of the renderer is used.")

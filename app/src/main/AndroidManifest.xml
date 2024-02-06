@@ -57,7 +57,7 @@
             android:theme="@style/AppTheme"
             tools:replace="android:theme" />
         <activity
-            android:name=".RawMapViewDemoActivity"
+            android:name=".MapViewActivity"
             android:exported="true" />
         <activity
             android:name=".NetworkActivity"

@@ -1,30 +1,14 @@
 package com.example.runrun
 
-import android.app.Activity
-import android.content.ActivityNotFoundException
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
-import android.widget.TextView
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.libraries.places.api.Places
-import com.google.android.libraries.places.api.model.Place
-import com.google.android.libraries.places.api.model.PlaceTypes
-import com.google.android.libraries.places.api.model.PlaceTypes.BUS_STATION
-import com.google.android.libraries.places.api.model.PlaceTypes.ESTABLISHMENT
-import com.google.android.libraries.places.api.model.TypeFilter
-import com.google.android.libraries.places.widget.Autocomplete
-import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.gson.Gson
-import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -65,9 +49,9 @@ class MainActivity : AppCompatActivity() {
         val matchingDataList = documents.mapNotNull { it.data }
         val matchingDataListJson = Gson().toJson(matchingDataList)
 
-        val intent = Intent(this, RawMapViewDemoActivity::class.java)
+        val intent = Intent(this, MapViewActivity::class.java)
         intent.putExtra("matchingDataListJson", matchingDataListJson)
-        Log.d("MainActivity just before intent - matchingDataListJson : ", matchingDataListJson)
+        Log.d("RawMapView로 보내는 데이터: ", matchingDataListJson)
         startActivity(intent)
     }
 

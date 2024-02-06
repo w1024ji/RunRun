@@ -16,5 +16,5 @@
         map:uiScrollGestures="true"
         map:uiZoomControls="true"
         map:uiZoomGestures="true"
-        tools:context=".RawMapViewDemoActivity"/>
+        tools:context=".MapViewActivity"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

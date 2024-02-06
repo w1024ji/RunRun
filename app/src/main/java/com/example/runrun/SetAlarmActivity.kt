@@ -1,50 +1,58 @@
 package com.example.runrun
 
+
+import android.app.Activity
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import java.util.*
 
-
+// 사용자가 알림을 설정하는 화면으로, 알림 시작 및 종료 시간, 반복 일자를 설정하고 알림을 스케줄링하는 역할을 수행하는 액티비티.
 class SetAlarmActivity : AppCompatActivity() {
+
 
     private var startHour = 0
     private var startMinute = 0
     private var endHour = 0
     private var endMinute = 0
-    var routeName: String? = null
-    var stationName: String? = null
 
+    // 알림 설정 화면 초기화 및 UI 구성
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_set_alarm)
-        Log.d("SetAlarmActivity", "Activity created")
+        Log.d("SetAlarmActivity", "onCreate() 실행")
 
         val startTimeTextView: TextView = findViewById(R.id.startTimeTextView)
         val endTimeTextView: TextView = findViewById(R.id.endTimeTextView)
         val dayChipGroup: ChipGroup = findViewById(R.id.dayChipGroup)
         val setAlarmButton: Button = findViewById(R.id.setAlarmButton)
-        val route01 : TextView = findViewById(R.id.bus01)
-        val station01 : TextView = findViewById(R.id.station01)
+        val routeNm : TextView = findViewById(R.id.bus01)
+        val stationNm : TextView = findViewById(R.id.station01)
 
-        // deprecated이지만 getParcelableArrayListExtra(string, Class) 쓰려면 API 33이상만 돼서 일단 보류.
-        val itemList: ArrayList<BusRouteListXmlParser.ItemList>? = intent.getParcelableArrayListExtra("itemList")
+        // 인텐트에서 전달된 데이터를 받아옴
+        val busDataJson = intent.getStringExtra("busData")
+        val busData: Map<String, Any> = Gson().fromJson(busDataJson, object : TypeToken<Map<String, Any>>() {}.type)
 
-        itemList?.forEach { item ->
-            routeName = item.rtNm
-            stationName = item.stNm
-        }
-        route01.text = routeName
-        station01.text = stationName
+        // 이후 busData를 활용하여 필요한 작업 수행
+        routeNm.text = busData["노선명"]?.toString() ?: ""
+        stationNm.text = busData["정류소명"]?.toString() ?: ""
+        val ordId: String = busData["순번"]?.toString() ?: ""
+        val routeId: String = busData["ROUTE_ID"]?.toString() ?: ""
+        val nodeId: String = busData["NODE_ID"]?.toString() ?: ""
 
         startTimeTextView.setOnClickListener {
             val timePickerDialog = TimePickerDialog(
@@ -79,7 +87,16 @@ class SetAlarmActivity : AppCompatActivity() {
         }
 
         setAlarmButton.setOnClickListener {
-            Log.d("SetAlarmActivity", "Set Alarm button clicked")
+            Log.d("SetAlarmActivity", "Set Alarm 버튼 클릭")
+
+            // Start MyForegroundService
+//            val serviceIntent = Intent(this, MyForegroundService::class.java)
+//            serviceIntent.putExtra("ordId", ordId)
+//            serviceIntent.putExtra("routeId", routeId)
+//            serviceIntent.putExtra("nodeId", nodeId)
+//            ContextCompat.startForegroundService(this, serviceIntent)
+
+
             val selectedDays = mutableListOf<Int>()
             for (i in 0 until dayChipGroup.childCount) {
                 val chip = dayChipGroup.getChildAt(i) as Chip
@@ -101,15 +118,22 @@ class SetAlarmActivity : AppCompatActivity() {
         }
     }
 
+    // 알림을 스케줄링하는 메서드
     private fun scheduleAlarm(startHour: Int, startMinute: Int, endHour: Int, endMinute: Int, days: List<Int>) {
-        Log.d("SetAlarmActivity", "Scheduling alarm")
+        Log.d("SetAlarmActivity", "scheduleAlarm() 시작")
 
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
+        // 갱신 주기 설정 (3분)
+        val intervalMillis = 3 * 60 * 1000 // 3분을 밀리초로 변환
+
+        // 시작 알람과 정지 알람에 사용될 PendingIntent 설정
         val startIntent = Intent(this, AlarmReceiver::class.java)
+        startIntent.action = "START_FOREGROUND_SERVICE"
         val startPendingIntent = PendingIntent.getBroadcast(this, 88, startIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         val stopIntent = Intent(this, StopAlarmReceiver::class.java)
+        stopIntent.action = "STOP_FOREGROUND_SERVICE"
         val stopPendingIntent = PendingIntent.getBroadcast(this, 99, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         for (day in days) {
@@ -141,22 +165,22 @@ class SetAlarmActivity : AppCompatActivity() {
                 endCalendar.add(Calendar.WEEK_OF_YEAR, 1)
             }
 
-            // Log the Unix timestamps
-            Log.d("SetAlarmActivity", "Start time in millis: ${startCalendar.timeInMillis}")
-            Log.d("SetAlarmActivity", "End time in millis: ${endCalendar.timeInMillis}")
+//            // Log the Unix timestamps
+//            Log.d("SetAlarmActivity", "Start time in millis: ${startCalendar.timeInMillis}")
+//            Log.d("SetAlarmActivity", "End time in millis: ${endCalendar.timeInMillis}")
 
-            // schedules a repeating alarm using Android's AlarmManager
+            // 갱신 시간에서 intervalMillis 간격으로 알람 설정
             alarmManager.setRepeating(
                 AlarmManager.RTC_WAKEUP,
                 startCalendar.timeInMillis,
-                AlarmManager.INTERVAL_DAY * 7,
+                intervalMillis.toLong(),
                 startPendingIntent
             )
 
             alarmManager.setRepeating(
                 AlarmManager.RTC_WAKEUP,
                 endCalendar.timeInMillis,
-                AlarmManager.INTERVAL_DAY * 7,
+                intervalMillis.toLong(),
                 stopPendingIntent
             )
         }
