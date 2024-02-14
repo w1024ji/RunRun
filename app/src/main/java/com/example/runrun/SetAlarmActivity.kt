@@ -89,13 +89,6 @@ class SetAlarmActivity : AppCompatActivity() {
         setAlarmButton.setOnClickListener {
             Log.d("SetAlarmActivity", "Set Alarm 버튼 클릭")
 
-//            // MyForegroundService한테 데이터 넘기기
-//            val serviceIntent = Intent(this, MyForegroundService::class.java)
-//            Log.d("SetAlarmActivity", "ordId: $ordId, routeId: $routeId, nodeId: $nodeId")
-//            serviceIntent.putExtra("ordId", ordId)
-//            serviceIntent.putExtra("routeId", routeId)
-//            serviceIntent.putExtra("nodeId", nodeId)
-
             val selectedDays = mutableListOf<Int>()
             for (i in 0 until dayChipGroup.childCount) {
                 val chip = dayChipGroup.getChildAt(i) as Chip

@@ -35,7 +35,6 @@ class MyForegroundService : Service() {
         Log.d("MyForegroundService" , "onCreate() 실행")
         // 동적으로 리시버 등록
         registerReceiver(alarmReceiver, IntentFilter("UPDATE_DATA"))
-//        acquirePartialWakeLock(this)
     }
 
     // 서비스 시작 시 호출되며, Foreground 서비스로 설정하고 주기적인 작업을 수행.
@@ -87,7 +86,6 @@ class MyForegroundService : Service() {
             Thread {
                 try {
                     val entries = loadPage(ord, busId, stId)
-//                    Log.d("entries 값: ", entries.toString()) // [ItemList(rtNm=노원15, stNm=창동아이파크, arrmsg1=곧 도착, arrmsg2=null)]
                     if ((entries != null) && entries.isNotEmpty()) {
                         arrmsg1 = entries[0].arrmsg1 ?: "N/A"
                     }
@@ -95,8 +93,7 @@ class MyForegroundService : Service() {
                     val broadcastIntent = Intent()
                     broadcastIntent.action = "UPDATE_DATA"
                     broadcastIntent.putExtra("arrmsg1", arrmsg1)
-//                    Log.d("arrmsg1 값: ", arrmsg1)
-                    sendBroadcast(broadcastIntent) // Broadcast the given intent to all interested BroadcastReceivers
+                    sendBroadcast(broadcastIntent)
 
                     handler.postDelayed(this, 60000)
                 } catch (e: Exception) {
@@ -106,26 +103,12 @@ class MyForegroundService : Service() {
         }
     }
 
-    // Acquire the wake lock
-    private fun acquirePartialWakeLock(context: Context) {
-        val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
-        partialWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MyApp::MyPartialWakeLockTag")
-        partialWakeLock?.acquire()
-    }
-
-    // Release the wake lock
-    private fun releasePartialWakeLock() {
-        partialWakeLock?.release()
-        partialWakeLock = null
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         Log.d("MyForegroundService ", "onDestroy() 실행")
         // 동적으로 등록한 리시버 해제
         unregisterReceiver(alarmReceiver)
         handler.removeCallbacks(runnableCode)
-//        releasePartialWakeLock()
         stopForeground(STOP_FOREGROUND_REMOVE)
     }
 
