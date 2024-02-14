@@ -20,7 +20,6 @@ import java.util.*
 // 사용자가 알림을 설정하는 화면으로, 알림 시작 및 종료 시간, 반복 일자를 설정하고 알림을 스케줄링하는 역할을 수행하는 액티비티.
 class SetAlarmActivity : AppCompatActivity() {
 
-
     private var startHour = 0
     private var startMinute = 0
     private var endHour = 0
@@ -28,7 +27,7 @@ class SetAlarmActivity : AppCompatActivity() {
     private lateinit var ordId : String
     private lateinit var routeId : String
     private lateinit var nodeId : String
-
+    private lateinit var notiNm : TextView
 
     // 알림 설정 화면 초기화 및 UI 구성
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,17 +41,19 @@ class SetAlarmActivity : AppCompatActivity() {
         val setAlarmButton: Button = findViewById(R.id.setAlarmButton)
         val routeNm : TextView = findViewById(R.id.bus01)
         val stationNm : TextView = findViewById(R.id.station01)
+        notiNm = findViewById(R.id.notificationName)
 
         // MapViewActivity에서 전달된 데이터를 받아옴
-        val busDataJson = intent.getStringExtra("busData")
-        val busData: Map<String, Any> = Gson().fromJson(busDataJson, object : TypeToken<Map<String, Any>>() {}.type)
+        val busDataJson = intent.getStringExtra("busDataJson").toString()
+//        Log.d("SetAlarmActivity", "인텐트 받은 값: $busDataJson")
+        val busData : Map<String, Any> = Gson().fromJson(busDataJson, object : TypeToken<Map<String, Any>>() {}.type)
 
-        // 이후 busData를 활용하여 필요한 작업 수행
         routeNm.text = busData["노선명"]?.toString() ?: ""
         stationNm.text = busData["정류소명"]?.toString() ?: ""
         ordId = busData["순번"]?.toString() ?: ""
         routeId = busData["ROUTE_ID"]?.toString() ?: ""
         nodeId = busData["NODE_ID"]?.toString() ?: ""
+
 
         startTimeTextView.setOnClickListener {
             val timePickerDialog = TimePickerDialog(
@@ -111,15 +112,15 @@ class SetAlarmActivity : AppCompatActivity() {
     // 알림을 스케줄링하는 메서드
     private fun scheduleAlarm(startHour: Int, startMinute: Int, endHour: Int, endMinute: Int, days: List<Int>) {
         Log.d("SetAlarmActivity", "scheduleAlarm() 시작")
-
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-
         // 시작 알람과 정지 알람에 사용될 PendingIntent 설정
         val startIntent = Intent(this, AlarmReceiver::class.java)
         startIntent.action = "START_FOREGROUND_SERVICE"
         startIntent.putExtra("ordId", ordId)
         startIntent.putExtra("routeId", routeId)
         startIntent.putExtra("nodeId", nodeId)
+        startIntent.putExtra("notiNm", notiNm.text.toString())
+//        Log.d("SetAlarmActivity", "notiNm 값: ${notiNm.text.toString()}")
         val startPendingIntent = PendingIntent.getBroadcast(this, 88, startIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         val stopIntent = Intent(this, StopAlarmReceiver::class.java)

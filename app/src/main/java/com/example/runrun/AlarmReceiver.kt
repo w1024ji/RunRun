@@ -8,6 +8,8 @@ import android.content.Intent
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
 
 class AlarmReceiver : BroadcastReceiver() {
@@ -18,7 +20,7 @@ class AlarmReceiver : BroadcastReceiver() {
     lateinit var ordId : String
     lateinit var routeId : String
     lateinit var nodeId : String
-
+    lateinit var notiNm : String
 
     override fun onReceive(context: Context, intent: Intent) {
         Log.d("AlarmReceiver", "onReceive() 시작")
@@ -27,6 +29,8 @@ class AlarmReceiver : BroadcastReceiver() {
         ordId = intent.getStringExtra("ordId").toString()
         routeId = intent.getStringExtra("routeId").toString()
         nodeId = intent.getStringExtra("nodeId").toString()
+        notiNm = intent.getStringExtra("notiNm").toString()
+        Log.d("AlarmReceiver", "인텐트로 받은 notiNm값: $notiNm")
 
         Log.d("AlarmReceiver", "액션 값: $action")
         when (action) {
@@ -44,7 +48,8 @@ class AlarmReceiver : BroadcastReceiver() {
                 serviceIntent.putExtra("ordId", ordId)
                 serviceIntent.putExtra("routeId", routeId)
                 serviceIntent.putExtra("nodeId", nodeId)
-                //여기서 버전 확인해야 하는거 추가해야 함
+                serviceIntent.putExtra("notiNm", notiNm)
+                // 버전 확인을 추가할까?
                 context.startForegroundService(serviceIntent)
                 updateNotification(context, updatedArrmsg1)
             }
@@ -57,8 +62,8 @@ class AlarmReceiver : BroadcastReceiver() {
 
         // Create the notification channel if running on Android Oreo or above
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = "Time Related Notifications"
-            val descriptionText = "Channel for time-related notifications"
+            val name = "Bus Notifications"
+            val descriptionText = "Channel for Bus notification"
             val importance = NotificationManager.IMPORTANCE_HIGH
             val channel = NotificationChannel(channelId, name, importance).apply {
                 description = descriptionText
@@ -68,7 +73,7 @@ class AlarmReceiver : BroadcastReceiver() {
 
         val notification = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_notification)
-            .setContentTitle("Time Related Notification")
+            .setContentTitle(notiNm)
             .setContentText("도착 예정: $updatedArrmsg1")
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)

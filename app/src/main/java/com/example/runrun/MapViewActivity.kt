@@ -140,10 +140,8 @@ class MapViewActivity : AppCompatActivity(), OnMapReadyCallback, OnMapsSdkInitia
             if (clickedMarkerData != null) {
                 val intent = Intent(this, SetAlarmActivity::class.java)
                 val busDataJson = Gson().toJson(clickedMarkerData)
-                Log.d("SetAlarmActivity에 넘기는 데이터: ", "busDataJson: $busDataJson") // SetAlarmActivity에 뭘 넘기는 건지
-                intent.putExtra("busData", busDataJson)
-
-                // SetAlarmActivity 시작
+                Log.d("SetAlarmActivity에 넘기는 데이터: ", "busDataJson: $busDataJson")
+                intent.putExtra("busDataJson", busDataJson)
                 startActivity(intent)
             }
             false // Return false to allow the default behavior (info window to open)

@@ -19,16 +19,12 @@ import java.net.URL
 // 백그라운드에서 동작하는 서비스로, 주기적으로 네트워크 요청을 수행하고 결과를 처리하여 알림을 생성하는 역할을 수행하는 서비스.
 class MyForegroundService : Service() {
     private val handler = Handler(Looper.getMainLooper())
-
-    private val channelId = "102"
-
-    private lateinit var ord: String
-    private lateinit var busId: String
-    private lateinit var stId: String
+    private lateinit var ord : String
+    private lateinit var busId : String
+    private lateinit var stId : String
+    private lateinit var notiNm : String
     // 동적으로 등록할 리시버
     private val alarmReceiver = AlarmReceiver()
-    // Declare a variable to hold the wake lock
-    private var partialWakeLock: PowerManager.WakeLock? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -40,17 +36,14 @@ class MyForegroundService : Service() {
     // 서비스 시작 시 호출되며, Foreground 서비스로 설정하고 주기적인 작업을 수행.
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d("MyForegroundService", "onStartCommand 실행")
-
         // SetAlarmActivity에서 받는 인텐트
         ord = intent?.getStringExtra("ordId") ?: "null"
         busId = intent?.getStringExtra("routeId") ?: "null"
         stId = intent?.getStringExtra("nodeId") ?: "null"
+        notiNm = intent?.getStringExtra("notiNm") ?: "null"
+
         Log.d("MyForegroundService", "받은 ord, busId, stId값: $ord, $busId, $stId")
-
-        // Create a minimal notification to satisfy Android 8.0+ requirements
         createMinimalNotification()
-
-        // Start the background thread by posting the runnableCode to the handler
         handler.post(runnableCode)
         return START_STICKY
     }
@@ -59,13 +52,13 @@ class MyForegroundService : Service() {
     private fun createMinimalNotification() {
         Log.d("MyForegroundService", "createMinimalNotification() 실행")
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channelId = "minimal_notification_channel"
-            val channelName = "Minimal Notification Channel"
+            val channelId = "100"
+            val channelName = "Minimal Channel"
             val notificationManager =
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
             val channel =
-                NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_LOW)
+                NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_MIN) // INPORTANCE_MIN으로 바꿔봄
             notificationManager.createNotificationChannel(channel)
 
             val notification = NotificationCompat.Builder(this, channelId)
@@ -93,6 +86,7 @@ class MyForegroundService : Service() {
                     val broadcastIntent = Intent()
                     broadcastIntent.action = "UPDATE_DATA"
                     broadcastIntent.putExtra("arrmsg1", arrmsg1)
+                    broadcastIntent.putExtra("notiNm", notiNm)
                     sendBroadcast(broadcastIntent)
 
                     handler.postDelayed(this, 60000)
