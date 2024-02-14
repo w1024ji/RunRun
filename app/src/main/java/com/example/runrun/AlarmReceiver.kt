@@ -8,7 +8,6 @@ import android.content.Intent
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import com.example.runrun.R
 
 
 class AlarmReceiver : BroadcastReceiver() {
@@ -16,44 +15,43 @@ class AlarmReceiver : BroadcastReceiver() {
     private val channelId = "102"
     private val notificationId = 3 // Unique ID for the notification
     var updatedArrmsg1 : String? = "example"
-    private var isInitialized = false // Flag to track initialization state
+    lateinit var ordId : String
+    lateinit var routeId : String
+    lateinit var nodeId : String
 
-
-    private fun init(context: Context) {
-        // Start MyForegroundService
-        val serviceIntent = Intent(context, MyForegroundService::class.java)
-        context.startService(serviceIntent)
-    }
 
     override fun onReceive(context: Context, intent: Intent) {
-        Log.d("AlarmReceiver", "onReceive()시작. Alarm broadcast 받음")
-
-        // Initialize if not already initialized
-        if (!isInitialized) {
-            init(context)
-            isInitialized = true
-        }
-
+        Log.d("AlarmReceiver", "onReceive() 시작")
         var action = intent.action
-        Log.d("AlarmReceiver", "action 값: $action")
+
+        ordId = intent.getStringExtra("ordId").toString()
+        routeId = intent.getStringExtra("routeId").toString()
+        nodeId = intent.getStringExtra("nodeId").toString()
+
+        Log.d("AlarmReceiver", "액션 값: $action")
         when (action) {
             "UPDATE_DATA" -> {
                 // 액션에 따른 동작 수행
                 updatedArrmsg1 = intent.getStringExtra("arrmsg1")
-                Log.d("AlarmReceiver", "Updated Message: $updatedArrmsg1")
+                Log.d("AlarmReceiver", "업데이트된 데이터: $updatedArrmsg1")
 
                 if (!updatedArrmsg1.isNullOrBlank()) {
                     updateNotification(context, updatedArrmsg1!!)
                 }
             }
             "START_FOREGROUND_SERVICE" -> {
+                val serviceIntent = Intent(context, MyForegroundService::class.java)
+                serviceIntent.putExtra("ordId", ordId)
+                serviceIntent.putExtra("routeId", routeId)
+                serviceIntent.putExtra("nodeId", nodeId)
+                //여기서 버전 확인해야 하는거 추가해야 함
+                context.startForegroundService(serviceIntent)
                 updateNotification(context, updatedArrmsg1)
             }
         }
     }
 
     private fun updateNotification(context: Context, updatedArrmsg1: String?) {
-        Log.d("AlarmReceiver", "updateNotification() 실행")
         val notificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
@@ -69,14 +67,13 @@ class AlarmReceiver : BroadcastReceiver() {
         }
 
         val notification = NotificationCompat.Builder(context, channelId)
-            .setSmallIcon(R.drawable.ic_notification)  // Replace with your own drawable icon
+            .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle("Time Related Notification")
-            .setContentText("Updated Message: $updatedArrmsg1")
+            .setContentText("도착 예정: $updatedArrmsg1")
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .build()
 
         notificationManager.notify(notificationId, notification)
-        Log.d("AlarmReceiver", "알림 업데이트 완료")
     }
 }

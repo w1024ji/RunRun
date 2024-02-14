@@ -1,20 +1,16 @@
 package com.example.runrun
 
 
-import android.app.Activity
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.gson.Gson
@@ -29,6 +25,10 @@ class SetAlarmActivity : AppCompatActivity() {
     private var startMinute = 0
     private var endHour = 0
     private var endMinute = 0
+    private lateinit var ordId : String
+    private lateinit var routeId : String
+    private lateinit var nodeId : String
+
 
     // 알림 설정 화면 초기화 및 UI 구성
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,16 +43,16 @@ class SetAlarmActivity : AppCompatActivity() {
         val routeNm : TextView = findViewById(R.id.bus01)
         val stationNm : TextView = findViewById(R.id.station01)
 
-        // 인텐트에서 전달된 데이터를 받아옴
+        // MapViewActivity에서 전달된 데이터를 받아옴
         val busDataJson = intent.getStringExtra("busData")
         val busData: Map<String, Any> = Gson().fromJson(busDataJson, object : TypeToken<Map<String, Any>>() {}.type)
 
         // 이후 busData를 활용하여 필요한 작업 수행
         routeNm.text = busData["노선명"]?.toString() ?: ""
         stationNm.text = busData["정류소명"]?.toString() ?: ""
-        val ordId: String = busData["순번"]?.toString() ?: ""
-        val routeId: String = busData["ROUTE_ID"]?.toString() ?: ""
-        val nodeId: String = busData["NODE_ID"]?.toString() ?: ""
+        ordId = busData["순번"]?.toString() ?: ""
+        routeId = busData["ROUTE_ID"]?.toString() ?: ""
+        nodeId = busData["NODE_ID"]?.toString() ?: ""
 
         startTimeTextView.setOnClickListener {
             val timePickerDialog = TimePickerDialog(
@@ -89,13 +89,12 @@ class SetAlarmActivity : AppCompatActivity() {
         setAlarmButton.setOnClickListener {
             Log.d("SetAlarmActivity", "Set Alarm 버튼 클릭")
 
-            // Start MyForegroundService
+//            // MyForegroundService한테 데이터 넘기기
 //            val serviceIntent = Intent(this, MyForegroundService::class.java)
+//            Log.d("SetAlarmActivity", "ordId: $ordId, routeId: $routeId, nodeId: $nodeId")
 //            serviceIntent.putExtra("ordId", ordId)
 //            serviceIntent.putExtra("routeId", routeId)
 //            serviceIntent.putExtra("nodeId", nodeId)
-//            ContextCompat.startForegroundService(this, serviceIntent)
-
 
             val selectedDays = mutableListOf<Int>()
             for (i in 0 until dayChipGroup.childCount) {
@@ -112,8 +111,6 @@ class SetAlarmActivity : AppCompatActivity() {
                     }
                 }
             }
-
-            // Schedule the alarm based on the times and days selected
             scheduleAlarm(startHour, startMinute, endHour, endMinute, selectedDays)
         }
     }
@@ -124,12 +121,12 @@ class SetAlarmActivity : AppCompatActivity() {
 
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-        // 갱신 주기 설정 (3분)
-        val intervalMillis = 2 * 60 * 1000 // 2분을 밀리초로 변환
-
         // 시작 알람과 정지 알람에 사용될 PendingIntent 설정
         val startIntent = Intent(this, AlarmReceiver::class.java)
         startIntent.action = "START_FOREGROUND_SERVICE"
+        startIntent.putExtra("ordId", ordId)
+        startIntent.putExtra("routeId", routeId)
+        startIntent.putExtra("nodeId", nodeId)
         val startPendingIntent = PendingIntent.getBroadcast(this, 88, startIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         val stopIntent = Intent(this, StopAlarmReceiver::class.java)
@@ -164,10 +161,6 @@ class SetAlarmActivity : AppCompatActivity() {
             if (endCalendar.before(now)) {
                 endCalendar.add(Calendar.WEEK_OF_YEAR, 1)
             }
-
-//            // Log the Unix timestamps
-//            Log.d("SetAlarmActivity", "Start time in millis: ${startCalendar.timeInMillis}")
-//            Log.d("SetAlarmActivity", "End time in millis: ${endCalendar.timeInMillis}")
 
             // 갱신 시간에서 intervalMillis 간격으로 알람 설정
             alarmManager.setRepeating(

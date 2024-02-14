@@ -13,6 +13,7 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
 
     <application
@@ -35,7 +36,11 @@
             android:exported="false">
         </receiver>
         <receiver android:name=".StopAlarmReceiver"/>
-        <service android:name=".MyForegroundService" />
+        <service
+            android:name=".MyForegroundService"
+            android:enabled="true"
+            android:exported="true">
+        </service>
 
         <!-- Didn't find class "androidx.core.app.CoreComponentFactory" 에러 때문에 추가함 -->
         <!-- 위에 android:usesCleartextTraffic="false" 모든 url허용을 true에서 false로 바꿈. -->
@@ -55,16 +60,12 @@
         <activity
             android:name=".SetAlarmActivity"
             android:exported="true"/>
-
         <activity
             android:name="com.google.android.libraries.places.widget.AutocompleteActivity"
             android:theme="@style/AppTheme"
             tools:replace="android:theme" />
         <activity
             android:name=".MapViewActivity"
-            android:exported="true" />
-        <activity
-            android:name=".NetworkActivity"
             android:exported="true" />
         <activity
             android:name=".MainActivity"

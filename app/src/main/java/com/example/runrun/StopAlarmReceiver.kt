@@ -9,7 +9,8 @@ import android.util.Log
 class StopAlarmReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
-        Log.d("StopAlarmReceiver", "OnReceive() 실행. stop alarm broadcast 받음")
+        Log.d("StopAlarmReceiver", "OnReceive() 실행")
+        Log.d("StopAlarmReceiver", "action 값: ${intent.action}")
 
         // MyForegroundService 종료
         val serviceIntent = Intent(context, MyForegroundService::class.java)
