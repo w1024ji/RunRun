@@ -10,6 +10,6 @@ class AfterSetting : AppCompatActivity() {
         setContentView(R.layout.activity_after_setting)
 
         val returnTo : Button = findViewById(R.id.returnTo)
-        
+
     }
 }
