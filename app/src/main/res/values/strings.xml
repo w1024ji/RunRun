@@ -8,7 +8,7 @@
     <string name="updated">Just Updated!</string>
 
     <string name="notification_context_text">RunRun 실행</string>
-    <string name="notification_context_title">버스 도착 예정 정보를 가져오기 시작합니다..</string>
+    <string name="notification_context_title">버스 도착 예정 정보를 가져오기 시작했습니다..</string>
 
     <string name="parsed_data">Parsed Data</string>
     <string name="this_is_parsed_xml">this is parsed xml</string>
