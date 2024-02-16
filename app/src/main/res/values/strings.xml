@@ -34,4 +34,5 @@
     <string name="sunday">Sunday</string>
     <string name="congrats">Congratulations! \nWeekly Alarm is successfully set.</string>
     <string name="returnTo">return to main</string>
+    <string name="mainDescription">welcome to main page</string>
 </resources>

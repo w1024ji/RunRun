@@ -106,7 +106,13 @@ class SetAlarmActivity : AppCompatActivity() {
                 }
             }
             scheduleAlarm(startHour, startMinute, endHour, endMinute, selectedDays)
+            goToafterSet()
         }
+    }
+
+    private fun goToafterSet(){
+        val afterSetIntent = Intent(this, AfterSetting::class.java)
+        startActivity(afterSetIntent)
     }
 
     // 알림을 스케줄링하는 메서드

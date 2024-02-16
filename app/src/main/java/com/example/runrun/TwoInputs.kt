@@ -11,12 +11,10 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.gson.Gson
 
 
-class MainActivity : AppCompatActivity() {
+class TwoInputs : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
-
+        setContentView(R.layout.activity_two_inputs)
         setupApplyButton()
     }
 
