@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.gson.Gson
+import java.io.Serializable
 
 
 class MainActivity : AppCompatActivity() {
@@ -45,13 +46,43 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    data class BusData(
+        val arsId: String,
+        val nodeId: String,
+        val routeId: String,
+        val xCoordinate: String,
+        val yCoordinate: String,
+        val routeName: String,
+        val sequence: String,
+        val stationName: String
+    ) : Serializable
+
     private fun handleQuerySuccess(documents: List<DocumentSnapshot>) {
+//        val matchingDataList = documents.mapNotNull { it.data }
+//        val matchingDataListJson = Gson().toJson(matchingDataList)
+//
+//        val intent = Intent(this, MapViewActivity::class.java)
+//        intent.putExtra("matchingDataListJson", matchingDataListJson)
+//        Log.d("RawMapView로 보내는 데이터: ", matchingDataListJson)
+//        startActivity(intent)
+
         val matchingDataList = documents.mapNotNull { it.data }
-        val matchingDataListJson = Gson().toJson(matchingDataList)
+        val busDataList = matchingDataList.map {
+            BusData(
+                it["ARS_ID"].toString(),
+                it["NODE_ID"].toString(),
+                it["ROUTE_ID"].toString(),
+                it["X좌표"].toString(),
+                it["Y좌표"].toString(),
+                it["노선명"].toString(),
+                it["순번"].toString(),
+                it["정류소명"].toString()
+            )
+        }
 
         val intent = Intent(this, MapViewActivity::class.java)
-        intent.putExtra("matchingDataListJson", matchingDataListJson)
-        Log.d("RawMapView로 보내는 데이터: ", matchingDataListJson)
+        intent.putExtra("matchingDataList", busDataList.toTypedArray())
+        Log.d("MapView로 보내는 데이터: ", "${busDataList.toTypedArray()}")
         startActivity(intent)
     }
 
