@@ -49,7 +49,7 @@ class TwoInputs : AppCompatActivity() {
 
         val intent = Intent(this, MapViewActivity::class.java)
         intent.putExtra("matchingDataListJson", matchingDataListJson)
-        Log.d("RawMapView로 보내는 데이터: ", matchingDataListJson)
+        Log.d("MapView로 보내는 데이터", matchingDataListJson)
         startActivity(intent)
     }
 
