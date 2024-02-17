@@ -165,8 +165,8 @@ class MapViewActivity : AppCompatActivity(), OnMapReadyCallback, OnMapsSdkInitia
     //  Google Maps SDK 초기화 완료 시 호출되는 콜백.
     override fun onMapsSdkInitialized(renderer: MapsInitializer.Renderer) {
         when (renderer) {
-            MapsInitializer.Renderer.LATEST -> Log.d("MapsDemo", "The latest version of the renderer is used.")
-            MapsInitializer.Renderer.LEGACY -> Log.d("MapsDemo", "The legacy version of the renderer is used.")
+            MapsInitializer.Renderer.LATEST -> Log.d("MapsDemo", "최신 버전의 renderer가 쓰이고 있음")
+            MapsInitializer.Renderer.LEGACY -> Log.d("MapsDemo", "낡은 버전의 renderer가 쓰이고 있음")
             else -> {
                 Log.d("onMapsSdkInitialized", "when - else 발생")
             }
