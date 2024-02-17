@@ -49,8 +49,13 @@ class AlarmReceiver : BroadcastReceiver() {
                 serviceIntent.putExtra("routeId", routeId)
                 serviceIntent.putExtra("nodeId", nodeId)
                 serviceIntent.putExtra("notiNm", notiNm)
-                // 버전 확인을 추가할까?
-                context.startForegroundService(serviceIntent)
+                // 버전 확인
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    context.startForegroundService(serviceIntent)
+                }
+                else{
+                    context.startService(serviceIntent)
+                }
                 updateNotification(context, updatedArrmsg1)
             }
         }

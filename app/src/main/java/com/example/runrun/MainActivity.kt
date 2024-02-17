@@ -58,13 +58,6 @@ class MainActivity : AppCompatActivity() {
     ) : Serializable
 
     private fun handleQuerySuccess(documents: List<DocumentSnapshot>) {
-//        val matchingDataList = documents.mapNotNull { it.data }
-//        val matchingDataListJson = Gson().toJson(matchingDataList)
-//
-//        val intent = Intent(this, MapViewActivity::class.java)
-//        intent.putExtra("matchingDataListJson", matchingDataListJson)
-//        Log.d("RawMapView로 보내는 데이터: ", matchingDataListJson)
-//        startActivity(intent)
 
         val matchingDataList = documents.mapNotNull { it.data }
         val busDataList = matchingDataList.map {
@@ -82,7 +75,7 @@ class MainActivity : AppCompatActivity() {
 
         val intent = Intent(this, MapViewActivity::class.java)
         intent.putExtra("matchingDataList", busDataList.toTypedArray())
-        Log.d("MapView로 보내는 데이터: ", "${busDataList.toTypedArray()}")
+        Log.d("MainActivity", "MapView로 보내는 인텐트: ${busDataList.toTypedArray()}") // [Lcom.example.runrun.MainActivity$BusData;@55d53ae
         startActivity(intent)
     }
 

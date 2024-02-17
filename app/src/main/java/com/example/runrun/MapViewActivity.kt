@@ -44,33 +44,10 @@ class MapViewActivity : AppCompatActivity(), OnMapReadyCallback, OnMapsSdkInitia
 
         MapsInitializer.initialize(applicationContext, MapsInitializer.Renderer.LATEST, this)
         setContentView(R.layout.google_map)
-//        val matchingDataListJson = intent.getStringExtra("matchingDataListJson")
-//        matchingDataList = Gson().fromJson(matchingDataListJson, object : TypeToken<MutableList<Map<String, Any>>>() {}.type)
 
         busDataList = intent.serializable("matchingDataList") as? Array<MainActivity.BusData>
-        Log.d("MapViewActivity", "인텐트로 받은 busDataList: $busDataList")
-        if (busDataList != null) {
-            // 여기서부터는 BusData 객체에 접근하여 요소를 꺼내 사용할 수 있습니다.
-            for (busData in busDataList!!) {
-                // 예시: 각 버스 데이터에 대한 처리
-                val arsId = busData.arsId
-                val nodeId = busData.nodeId
-                val routeId = busData.routeId
-                val xCoordinate = busData.xCoordinate
-                val yCoordinate = busData.yCoordinate
-                val routeName = busData.routeName
-                val sequence = busData.sequence
-                val stationName = busData.stationName
-                Log.d("MapViewActivity", "arsId: $arsId, routeName: $routeName, stationName: $stationName")
-            }
-        }
-
+        Log.d("MapViewActivity", "인텐트로 받은 busDataList: $busDataList") // [Lcom.example.runrun.MainActivity$BusData;@81faa3a
         setupMapView(savedInstanceState)
-    }
-
-    inline fun <reified T : java.io.Serializable> Bundle.serializable(key: String): T? = when {
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> getSerializable(key, T::class.java)
-        else -> @Suppress("DEPRECATION") getSerializable(key) as? T
     }
 
     inline fun <reified T : Serializable> Intent.serializable(key: String): T? = when {
@@ -141,15 +118,6 @@ class MapViewActivity : AppCompatActivity(), OnMapReadyCallback, OnMapsSdkInitia
         Log.d("MapViewActivity", "onMapReady() 실행")
         val boundsBuilder = LatLngBounds.Builder() // Create a bounds builder to include all markers
 
-//        for (data in matchingDataList) {
-//            val latitude = data["Y좌표"].toString().toDoubleOrNull() ?: 0.0
-//            val longitude = data["X좌표"].toString().toDoubleOrNull() ?: 0.0
-//            val location = LatLng(latitude, longitude)
-//            val marker = map.addMarker(MarkerOptions().position(location))
-//            marker?.tag = data
-//            boundsBuilder.include(location)
-//        }
-
         if (busDataList != null) {
             // 여기서부터는 BusData 객체에 접근하여 요소를 꺼내 사용할 수 있습니다.
             for (busData in busDataList!!) {
@@ -176,20 +144,6 @@ class MapViewActivity : AppCompatActivity(), OnMapReadyCallback, OnMapsSdkInitia
                 map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding))
             }
         })
-
-        // 마커를 클릭하면
-//        map.setOnMarkerClickListener { marker ->
-//            @Suppress("UNCHECKED_CAST")
-//            val clickedMarkerData = marker.tag as? Map<String, Any>
-//            if (clickedMarkerData != null) {
-//                val intent = Intent(this, SetAlarmActivity::class.java)
-//                val busDataJson = Gson().toJson(clickedMarkerData)
-//                Log.d("SetAlarmActivity에 넘기는 데이터: ", "busDataJson: $busDataJson")
-//                intent.putExtra("busDataJson", busDataJson)
-//                startActivity(intent)
-//            }
-//            false // Return false to allow the default behavior (info window to open)
-//        }
 
         map.setOnMarkerClickListener { marker ->
             val busData = marker.tag as? MainActivity.BusData
