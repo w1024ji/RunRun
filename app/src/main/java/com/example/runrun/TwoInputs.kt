@@ -12,12 +12,10 @@ import com.google.gson.Gson
 import java.io.Serializable
 
 
-class MainActivity : AppCompatActivity() {
+class TwoInputs : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
-
+        setContentView(R.layout.activity_two_inputs)
         setupApplyButton()
     }
 
@@ -80,6 +78,7 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(this, MapViewActivity::class.java)
         intent.putExtra("busDataList", busDataList.toTypedArray())
         Log.d("MainActivity", "MapView로 보내는 인텐트: ${busDataList.toTypedArray()}") // [Lcom.example.runrun.MainActivity$BusData;@55d53ae
+
         startActivity(intent)
     }
 

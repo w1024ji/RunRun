@@ -8,7 +8,7 @@
     android:layout_marginStart="0sp"
     android:layout_marginTop="0sp"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    tools:context=".TwoInputs">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
