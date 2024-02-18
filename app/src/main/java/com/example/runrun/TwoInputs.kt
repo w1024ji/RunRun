@@ -9,14 +9,13 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.gson.Gson
+import java.io.Serializable
 
 
-class MainActivity : AppCompatActivity() {
+class TwoInputs : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
-
+        setContentView(R.layout.activity_two_inputs)
         setupApplyButton()
     }
 
@@ -31,9 +30,13 @@ class MainActivity : AppCompatActivity() {
             val stationNameInput = stationName.text.toString()
             val busNameInput = busName.text.toString()
 
+            Log.d("MainActivity", "db값: $db, busInfoCollection값: $busInfoCollection")
+
             val query = busInfoCollection
                 .whereEqualTo("정류소명", stationNameInput)
                 .whereEqualTo("노선명", busNameInput)
+
+            Log.d("MainActivity", "query값: $query")
 
             query.get()
                 .addOnSuccessListener { querySnapshot ->
@@ -45,13 +48,37 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    data class BusData(
+        val arsId: String,
+        val nodeId: String,
+        val routeId: String,
+        val xCoordinate: String,
+        val yCoordinate: String,
+        val routeName: String,
+        val sequence: String,
+        val stationName: String
+    ) : Serializable
+
     private fun handleQuerySuccess(documents: List<DocumentSnapshot>) {
+
         val matchingDataList = documents.mapNotNull { it.data }
-        val matchingDataListJson = Gson().toJson(matchingDataList)
+        val busDataList = matchingDataList.map {
+            BusData(
+                it["ARS_ID"].toString(),
+                it["NODE_ID"].toString(),
+                it["ROUTE_ID"].toString(),
+                it["X좌표"].toString(),
+                it["Y좌표"].toString(),
+                it["노선명"].toString(),
+                it["순번"].toString(),
+                it["정류소명"].toString()
+            )
+        }
 
         val intent = Intent(this, MapViewActivity::class.java)
-        intent.putExtra("matchingDataListJson", matchingDataListJson)
-        Log.d("RawMapView로 보내는 데이터: ", matchingDataListJson)
+        intent.putExtra("busDataList", busDataList.toTypedArray())
+        Log.d("MainActivity", "MapView로 보내는 인텐트: ${busDataList.toTypedArray()}") // [Lcom.example.runrun.MainActivity$BusData;@55d53ae
+
         startActivity(intent)
     }
 

@@ -6,6 +6,7 @@ import android.app.PendingIntent
 import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
@@ -15,6 +16,7 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import java.io.Serializable
 import java.util.*
 
 // 사용자가 알림을 설정하는 화면으로, 알림 시작 및 종료 시간, 반복 일자를 설정하고 알림을 스케줄링하는 역할을 수행하는 액티비티.
@@ -28,6 +30,11 @@ class SetAlarmActivity : AppCompatActivity() {
     private lateinit var routeId : String
     private lateinit var nodeId : String
     private lateinit var notiNm : TextView
+
+    inline fun <reified T : Serializable> Intent.serializable(key: String): T? = when {
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> getSerializableExtra(key, T::class.java)
+        else -> @Suppress("DEPRECATION") getSerializableExtra(key) as? T
+    }
 
     // 알림 설정 화면 초기화 및 UI 구성
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,15 +51,25 @@ class SetAlarmActivity : AppCompatActivity() {
         notiNm = findViewById(R.id.notificationName)
 
         // MapViewActivity에서 전달된 데이터를 받아옴
-        val busDataJson = intent.getStringExtra("busDataJson").toString()
-//        Log.d("SetAlarmActivity", "인텐트 받은 값: $busDataJson")
-        val busData : Map<String, Any> = Gson().fromJson(busDataJson, object : TypeToken<Map<String, Any>>() {}.type)
+//        val busDataJson = intent.getStringExtra("busDataJson").toString()
+////        Log.d("SetAlarmActivity", "인텐트 받은 값: $busDataJson")
+//        val busData : Map<String, Any> = Gson().fromJson(busDataJson, object : TypeToken<Map<String, Any>>() {}.type)
 
-        routeNm.text = busData["노선명"]?.toString() ?: ""
-        stationNm.text = busData["정류소명"]?.toString() ?: ""
-        ordId = busData["순번"]?.toString() ?: ""
-        routeId = busData["ROUTE_ID"]?.toString() ?: ""
-        nodeId = busData["NODE_ID"]?.toString() ?: ""
+        val busData = intent.serializable("busData") as? MainActivity.BusData
+        if (busData != null) {
+            routeNm.text = busData.routeName
+            stationNm.text = busData.stationName
+            ordId = busData.sequence
+            routeId = busData.routeId
+            nodeId = busData.nodeId
+        }
+
+
+//        routeNm.text = busData["노선명"]?.toString() ?: ""
+//        stationNm.text = busData["정류소명"]?.toString() ?: ""
+//        ordId = busData["순번"]?.toString() ?: ""
+//        routeId = busData["ROUTE_ID"]?.toString() ?: ""
+//        nodeId = busData["NODE_ID"]?.toString() ?: ""
 
 
         startTimeTextView.setOnClickListener {
@@ -106,7 +123,13 @@ class SetAlarmActivity : AppCompatActivity() {
                 }
             }
             scheduleAlarm(startHour, startMinute, endHour, endMinute, selectedDays)
+            goToafterSet()
         }
+    }
+
+    private fun goToafterSet(){
+        val afterSetIntent = Intent(this, AfterSetting::class.java)
+        startActivity(afterSetIntent)
     }
 
     // 알림을 스케줄링하는 메서드
