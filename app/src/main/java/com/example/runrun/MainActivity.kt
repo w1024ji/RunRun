@@ -32,9 +32,13 @@ class MainActivity : AppCompatActivity() {
             val stationNameInput = stationName.text.toString()
             val busNameInput = busName.text.toString()
 
+            Log.d("MainActivity", "db값: $db, busInfoCollection값: $busInfoCollection")
+
             val query = busInfoCollection
                 .whereEqualTo("정류소명", stationNameInput)
                 .whereEqualTo("노선명", busNameInput)
+
+            Log.d("MainActivity", "query값: $query")
 
             query.get()
                 .addOnSuccessListener { querySnapshot ->
@@ -74,7 +78,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         val intent = Intent(this, MapViewActivity::class.java)
-        intent.putExtra("matchingDataList", busDataList.toTypedArray())
+        intent.putExtra("busDataList", busDataList.toTypedArray())
         Log.d("MainActivity", "MapView로 보내는 인텐트: ${busDataList.toTypedArray()}") // [Lcom.example.runrun.MainActivity$BusData;@55d53ae
         startActivity(intent)
     }

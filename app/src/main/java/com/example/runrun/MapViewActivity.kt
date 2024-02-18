@@ -45,7 +45,7 @@ class MapViewActivity : AppCompatActivity(), OnMapReadyCallback, OnMapsSdkInitia
         MapsInitializer.initialize(applicationContext, MapsInitializer.Renderer.LATEST, this)
         setContentView(R.layout.google_map)
 
-        busDataList = intent.serializable("matchingDataList") as? Array<MainActivity.BusData>
+        busDataList = intent.serializable("busDataList") as? Array<MainActivity.BusData>
         Log.d("MapViewActivity", "인텐트로 받은 busDataList: $busDataList") // [Lcom.example.runrun.MainActivity$BusData;@81faa3a
         setupMapView(savedInstanceState)
     }
