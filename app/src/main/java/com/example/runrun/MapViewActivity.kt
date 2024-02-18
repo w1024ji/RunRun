@@ -45,7 +45,7 @@ class MapViewActivity : AppCompatActivity(), OnMapReadyCallback, OnMapsSdkInitia
         MapsInitializer.initialize(applicationContext, MapsInitializer.Renderer.LATEST, this)
         setContentView(R.layout.google_map)
 
-        busDataList = intent.serializable("busDataList") as? Array<MainActivity.BusData>
+        busDataList = intent.serializable("busDataList") as? Array<TwoInputs.BusData>
         Log.d("MapViewActivity", "인텐트로 받은 busDataList: $busDataList") // [Lcom.example.runrun.MainActivity$BusData;@81faa3a
         setupMapView(savedInstanceState)
     }
@@ -146,7 +146,7 @@ class MapViewActivity : AppCompatActivity(), OnMapReadyCallback, OnMapsSdkInitia
         })
 
         map.setOnMarkerClickListener { marker ->
-            val busData = marker.tag as? MainActivity.BusData
+            val busData = marker.tag as? TwoInputs.BusData
             if (busData != null) {
                 val intent = Intent(this, SetAlarmActivity::class.java)
                 intent.putExtra("busData", busData)
@@ -159,7 +159,7 @@ class MapViewActivity : AppCompatActivity(), OnMapReadyCallback, OnMapsSdkInitia
 
     companion object {
         private const val MAPVIEW_BUNDLE_KEY = BuildConfig.GOOGLE_MAP_API
-        var busDataList: Array<MainActivity.BusData>? = null
+        var busDataList: Array<TwoInputs.BusData>? = null
     }
 
     //  Google Maps SDK 초기화 완료 시 호출되는 콜백.
