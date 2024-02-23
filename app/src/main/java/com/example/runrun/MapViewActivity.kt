@@ -13,12 +13,18 @@
 // limitations under the License.
 package com.example.runrun
 
+import BusParcelable
 import android.content.Intent
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.os.Build
+import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
+import android.os.Parcelable
 import android.util.Log
 import android.view.ViewTreeObserver
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.IntentCompat
+//import androidx.lifecycle.viewmodel.CreationExtras.Empty.map
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
@@ -26,6 +32,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.io.Serializable
+import java.util.ArrayList
 
 /**
  * This shows how to create a simple activity with a raw MapView and add a marker to it. This
@@ -35,7 +42,11 @@ import java.io.Serializable
 // 지도를 표시하고, 마커를 추가하며, 해당 마커를 클릭할 때 다른 화면으로 이동하는 역할을 수행하는 액티비티.
 class MapViewActivity : AppCompatActivity(), OnMapReadyCallback, OnMapsSdkInitializedCallback {
     private var mMapView: MapView? = null
-    private lateinit var matchingDataList: MutableList<Map<String, Any>>
+
+    companion object {
+        private const val MAPVIEW_BUNDLE_KEY = BuildConfig.GOOGLE_MAP_API
+        var busParcel : ArrayList<BusParcelable>? = null
+    }
 
     // 액티비티 초기화 및 지도 설정.
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,14 +56,13 @@ class MapViewActivity : AppCompatActivity(), OnMapReadyCallback, OnMapsSdkInitia
         MapsInitializer.initialize(applicationContext, MapsInitializer.Renderer.LATEST, this)
         setContentView(R.layout.google_map)
 
-        busDataList = intent.serializable("busDataList") as? Array<TwoInputs.BusData>
-        Log.d("MapViewActivity", "인텐트로 받은 busDataList: $busDataList") // [Lcom.example.runrun.MainActivity$BusData;@81faa3a
-        setupMapView(savedInstanceState)
+        busParcel = intent.parcelableArrayList<BusParcelable>("busParcel")
+        Log.d("MapViewActivity", "인텐트로 받은 busParcel: $busParcel") // [BusParcelable(arsId=10710, nodeId=109900167, routeId=109900010, xCoordinate=127.0472314, yCoordinate=37.6610589, routeName=노원15, sequence=27, stationName=창동아이파크), BusParcelable(arsId=10714, nodeId=109900169, routeId=109900010, xCoordinate=127.0473835, yCoordinate=37.66086168, routeName=노원15, sequence=56, stationName=창동아이파크)]
     }
 
-    inline fun <reified T : Serializable> Intent.serializable(key: String): T? = when {
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> getSerializableExtra(key, T::class.java)
-        else -> @Suppress("DEPRECATION") getSerializableExtra(key) as? T
+    inline fun <reified T : Parcelable> Intent.parcelableArrayList(key: String): ArrayList<BusParcelable>? = when {
+        SDK_INT >= 33 -> getParcelableArrayListExtra(key, BusParcelable::class.java)
+        else -> @Suppress("DEPRECATION") getParcelableArrayListExtra(key)
     }
 
     // 지도 뷰 설정 및 초기화.
@@ -118,13 +128,14 @@ class MapViewActivity : AppCompatActivity(), OnMapReadyCallback, OnMapsSdkInitia
         Log.d("MapViewActivity", "onMapReady() 실행")
         val boundsBuilder = LatLngBounds.Builder() // Create a bounds builder to include all markers
 
-        if (busDataList != null) {
+        if (busParcel != null) {
             // 여기서부터는 BusData 객체에 접근하여 요소를 꺼내 사용할 수 있습니다.
-            for (busData in busDataList!!) {
+            for (busData in busParcel!!) {
                 val latitude = busData.yCoordinate.toDoubleOrNull() ?: 0.0
                 val longitude = busData.xCoordinate.toDoubleOrNull() ?: 0.0
                 Log.d("onMapReady()", "latitiude 값: $latitude, longitude 값: $longitude")
                 val location = LatLng(latitude, longitude)
+                Log.d("onMapReady()", "location 값: $location")
                 val marker = map.addMarker(MarkerOptions().position(location))
                 marker?.tag = busData
                 boundsBuilder.include(location)
@@ -146,7 +157,7 @@ class MapViewActivity : AppCompatActivity(), OnMapReadyCallback, OnMapsSdkInitia
         })
 
         map.setOnMarkerClickListener { marker ->
-            val busData = marker.tag as? TwoInputs.BusData
+            val busData = marker.tag as? BusParcelable
             if (busData != null) {
                 val intent = Intent(this, SetAlarmActivity::class.java)
                 intent.putExtra("busData", busData)
@@ -155,11 +166,6 @@ class MapViewActivity : AppCompatActivity(), OnMapReadyCallback, OnMapsSdkInitia
             }
             false // Return false to allow the default behavior (info window to open)
         }
-    }
-
-    companion object {
-        private const val MAPVIEW_BUNDLE_KEY = BuildConfig.GOOGLE_MAP_API
-        var busDataList: Array<TwoInputs.BusData>? = null
     }
 
     //  Google Maps SDK 초기화 완료 시 호출되는 콜백.

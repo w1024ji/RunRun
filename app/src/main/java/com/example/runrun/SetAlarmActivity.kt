@@ -1,6 +1,7 @@
 package com.example.runrun
 
 
+import BusParcelable
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.app.TimePickerDialog
@@ -12,6 +13,7 @@ import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.example.runrun.MapViewActivity.Companion.busParcel
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.gson.Gson
@@ -30,6 +32,8 @@ class SetAlarmActivity : AppCompatActivity() {
     private lateinit var routeId : String
     private lateinit var nodeId : String
     private lateinit var notiNm : TextView
+
+    lateinit var busParcel : BusParcelable
 
     inline fun <reified T : Serializable> Intent.serializable(key: String): T? = when {
         Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> getSerializableExtra(key, T::class.java)
@@ -55,14 +59,16 @@ class SetAlarmActivity : AppCompatActivity() {
 ////        Log.d("SetAlarmActivity", "인텐트 받은 값: $busDataJson")
 //        val busData : Map<String, Any> = Gson().fromJson(busDataJson, object : TypeToken<Map<String, Any>>() {}.type)
 
-        val busData = intent.serializable("busData") as? MainActivity.BusData
-        if (busData != null) {
-            routeNm.text = busData.routeName
-            stationNm.text = busData.stationName
-            ordId = busData.sequence
-            routeId = busData.routeId
-            nodeId = busData.nodeId
+//        val busData = intent.serializable("busData") as? MainActivity.BusData
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            busParcel = intent.getParcelableExtra("busData", BusParcelable::class.java)!!
         }
+        routeNm.text = busParcel.routeName
+        stationNm.text = busParcel.stationName
+        ordId = busParcel.sequence
+        routeId = busParcel.routeId
+        nodeId = busParcel.nodeId
+        Log.d("SetAlarmActivity", "ordId값: $ordId, routeId값: $routeId, nodeId값: $nodeId")
 
 
 //        routeNm.text = busData["노선명"]?.toString() ?: ""

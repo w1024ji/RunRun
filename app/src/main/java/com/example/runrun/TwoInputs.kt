@@ -1,5 +1,6 @@
 package com.example.runrun
 
+import BusParcelable
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -48,22 +49,10 @@ class TwoInputs : AppCompatActivity() {
         }
     }
 
-    data class BusData(
-        val arsId: String,
-        val nodeId: String,
-        val routeId: String,
-        val xCoordinate: String,
-        val yCoordinate: String,
-        val routeName: String,
-        val sequence: String,
-        val stationName: String
-    ) : Serializable
-
     private fun handleQuerySuccess(documents: List<DocumentSnapshot>) {
-
         val matchingDataList = documents.mapNotNull { it.data }
-        val busDataList = matchingDataList.map {
-            BusData(
+        val busDataList = ArrayList(matchingDataList.map {
+            BusParcelable(
                 it["ARS_ID"].toString(),
                 it["NODE_ID"].toString(),
                 it["ROUTE_ID"].toString(),
@@ -73,12 +62,12 @@ class TwoInputs : AppCompatActivity() {
                 it["순번"].toString(),
                 it["정류소명"].toString()
             )
-        }
+        })
 
+        // val busDataList: ArrayList<BusParcelable!>
         val intent = Intent(this, MapViewActivity::class.java)
-        intent.putExtra("busDataList", busDataList.toTypedArray())
-        Log.d("MainActivity", "MapView로 보내는 인텐트: ${busDataList.toTypedArray()}") // [Lcom.example.runrun.MainActivity$BusData;@55d53ae
-
+        intent.putExtra("busParcel", busDataList)
+        Log.d("MainActivity", "MapView로 보내는 인텐트: $busDataList")
         startActivity(intent)
     }
 
