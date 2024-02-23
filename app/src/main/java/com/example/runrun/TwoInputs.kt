@@ -9,8 +9,6 @@ import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.gson.Gson
-import java.io.Serializable
 
 
 class TwoInputs : AppCompatActivity() {

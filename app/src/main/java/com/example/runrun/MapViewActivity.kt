@@ -15,23 +15,16 @@ package com.example.runrun
 
 import BusParcelable
 import android.content.Intent
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-import android.os.Build
 import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.Log
 import android.view.ViewTreeObserver
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.IntentCompat
-//import androidx.lifecycle.viewmodel.CreationExtras.Empty.map
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import java.io.Serializable
 import java.util.ArrayList
 
 /**
@@ -58,6 +51,7 @@ class MapViewActivity : AppCompatActivity(), OnMapReadyCallback, OnMapsSdkInitia
 
         busParcel = intent.parcelableArrayList<BusParcelable>("busParcel")
         Log.d("MapViewActivity", "인텐트로 받은 busParcel: $busParcel") // [BusParcelable(arsId=10710, nodeId=109900167, routeId=109900010, xCoordinate=127.0472314, yCoordinate=37.6610589, routeName=노원15, sequence=27, stationName=창동아이파크), BusParcelable(arsId=10714, nodeId=109900169, routeId=109900010, xCoordinate=127.0473835, yCoordinate=37.66086168, routeName=노원15, sequence=56, stationName=창동아이파크)]
+        setupMapView(savedInstanceState)
     }
 
     inline fun <reified T : Parcelable> Intent.parcelableArrayList(key: String): ArrayList<BusParcelable>? = when {
