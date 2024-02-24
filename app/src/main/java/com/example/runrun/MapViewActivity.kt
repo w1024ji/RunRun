@@ -38,7 +38,7 @@ class MapViewActivity : AppCompatActivity(), OnMapReadyCallback, OnMapsSdkInitia
 
     companion object {
         private const val MAPVIEW_BUNDLE_KEY = BuildConfig.GOOGLE_MAP_API
-        var busParcel : ArrayList<BusParcelable>? = null
+        var busDataList : ArrayList<BusParcelable>? = null
     }
 
     // 액티비티 초기화 및 지도 설정.
@@ -49,8 +49,8 @@ class MapViewActivity : AppCompatActivity(), OnMapReadyCallback, OnMapsSdkInitia
         MapsInitializer.initialize(applicationContext, MapsInitializer.Renderer.LATEST, this)
         setContentView(R.layout.google_map)
 
-        busParcel = intent.parcelableArrayList<BusParcelable>("busParcel")
-        Log.d("MapViewActivity", "인텐트로 받은 busParcel: $busParcel") // [BusParcelable(arsId=10710, nodeId=109900167, routeId=109900010, xCoordinate=127.0472314, yCoordinate=37.6610589, routeName=노원15, sequence=27, stationName=창동아이파크), BusParcelable(arsId=10714, nodeId=109900169, routeId=109900010, xCoordinate=127.0473835, yCoordinate=37.66086168, routeName=노원15, sequence=56, stationName=창동아이파크)]
+        busDataList = intent.parcelableArrayList<BusParcelable>("busDataList")
+        Log.d("MapViewActivity", "인텐트로 받은 busDataList: $busDataList") // [BusParcelable(arsId=10710, nodeId=109900167, routeId=109900010, xCoordinate=127.0472314, yCoordinate=37.6610589, routeName=노원15, sequence=27, stationName=창동아이파크), BusParcelable(arsId=10714, nodeId=109900169, routeId=109900010, xCoordinate=127.0473835, yCoordinate=37.66086168, routeName=노원15, sequence=56, stationName=창동아이파크)]
         setupMapView(savedInstanceState)
     }
 
@@ -122,12 +122,13 @@ class MapViewActivity : AppCompatActivity(), OnMapReadyCallback, OnMapsSdkInitia
         Log.d("MapViewActivity", "onMapReady() 실행")
         val boundsBuilder = LatLngBounds.Builder() // Create a bounds builder to include all markers
 
-        if (busParcel != null) {
-            // 여기서부터는 BusData 객체에 접근하여 요소를 꺼내 사용할 수 있습니다.
-            for (busData in busParcel!!) {
+        if (busDataList != null) {
+            // ArrayList<BusParcelable>?인 busParcel에서 두개 이상의 마커를 꺼내 지도에 배치
+            // val busData: BusParcelable
+            for (busData in busDataList!!) {
                 val latitude = busData.yCoordinate.toDoubleOrNull() ?: 0.0
                 val longitude = busData.xCoordinate.toDoubleOrNull() ?: 0.0
-                Log.d("onMapReady()", "latitiude 값: $latitude, longitude 값: $longitude")
+//                Log.d("onMapReady()", "latitiude 값: $latitude, longitude 값: $longitude")
                 val location = LatLng(latitude, longitude)
                 Log.d("onMapReady()", "location 값: $location")
                 val marker = map.addMarker(MarkerOptions().position(location))

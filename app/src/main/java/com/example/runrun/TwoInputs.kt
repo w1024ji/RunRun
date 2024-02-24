@@ -64,7 +64,7 @@ class TwoInputs : AppCompatActivity() {
 
         // val busDataList: ArrayList<BusParcelable!>
         val intent = Intent(this, MapViewActivity::class.java)
-        intent.putExtra("busParcel", busDataList)
+        intent.putExtra("busDataList", busDataList)
         Log.d("MainActivity", "MapView로 보내는 인텐트: $busDataList")
         startActivity(intent)
     }

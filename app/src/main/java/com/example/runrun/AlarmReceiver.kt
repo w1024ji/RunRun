@@ -8,8 +8,6 @@ import android.content.Intent
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 
 
 class AlarmReceiver : BroadcastReceiver() {

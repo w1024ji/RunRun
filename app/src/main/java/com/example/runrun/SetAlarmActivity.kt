@@ -7,18 +7,15 @@ import android.app.PendingIntent
 import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
-import android.os.Build
+import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
+import android.os.Parcelable
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.example.runrun.MapViewActivity.Companion.busParcel
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import java.io.Serializable
 import java.util.*
 
 // 사용자가 알림을 설정하는 화면으로, 알림 시작 및 종료 시간, 반복 일자를 설정하고 알림을 스케줄링하는 역할을 수행하는 액티비티.
@@ -33,11 +30,11 @@ class SetAlarmActivity : AppCompatActivity() {
     private lateinit var nodeId : String
     private lateinit var notiNm : TextView
 
-    lateinit var busParcel : BusParcelable
+    lateinit var busData : BusParcelable
 
-    inline fun <reified T : Serializable> Intent.serializable(key: String): T? = when {
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> getSerializableExtra(key, T::class.java)
-        else -> @Suppress("DEPRECATION") getSerializableExtra(key) as? T
+    inline fun <reified BusParcelable : Parcelable> Intent.parcelable(key: String): BusParcelable? = when {
+        SDK_INT >= 33 -> getParcelableExtra(key, BusParcelable::class.java)
+        else -> @Suppress("DEPRECATION") getParcelableExtra(key) as? BusParcelable
     }
 
     // 알림 설정 화면 초기화 및 UI 구성
@@ -55,28 +52,14 @@ class SetAlarmActivity : AppCompatActivity() {
         notiNm = findViewById(R.id.notificationName)
 
         // MapViewActivity에서 전달된 데이터를 받아옴
-//        val busDataJson = intent.getStringExtra("busDataJson").toString()
-////        Log.d("SetAlarmActivity", "인텐트 받은 값: $busDataJson")
-//        val busData : Map<String, Any> = Gson().fromJson(busDataJson, object : TypeToken<Map<String, Any>>() {}.type)
+        busData = intent.parcelable("busData")!!
 
-//        val busData = intent.serializable("busData") as? MainActivity.BusData
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            busParcel = intent.getParcelableExtra("busData", BusParcelable::class.java)!!
-        }
-        routeNm.text = busParcel.routeName
-        stationNm.text = busParcel.stationName
-        ordId = busParcel.sequence
-        routeId = busParcel.routeId
-        nodeId = busParcel.nodeId
+        routeNm.text = busData.routeName
+        stationNm.text = busData.stationName
+        ordId = busData.sequence
+        routeId = busData.routeId
+        nodeId = busData.nodeId
         Log.d("SetAlarmActivity", "ordId값: $ordId, routeId값: $routeId, nodeId값: $nodeId")
-
-
-//        routeNm.text = busData["노선명"]?.toString() ?: ""
-//        stationNm.text = busData["정류소명"]?.toString() ?: ""
-//        ordId = busData["순번"]?.toString() ?: ""
-//        routeId = busData["ROUTE_ID"]?.toString() ?: ""
-//        nodeId = busData["NODE_ID"]?.toString() ?: ""
-
 
         startTimeTextView.setOnClickListener {
             val timePickerDialog = TimePickerDialog(
@@ -148,8 +131,7 @@ class SetAlarmActivity : AppCompatActivity() {
         startIntent.putExtra("ordId", ordId)
         startIntent.putExtra("routeId", routeId)
         startIntent.putExtra("nodeId", nodeId)
-        startIntent.putExtra("notiNm", notiNm.text.toString())
-//        Log.d("SetAlarmActivity", "notiNm 값: ${notiNm.text.toString()}")
+        startIntent.putExtra("notiNm", notiNm.text.toString()) // toString() 꼭 해야 함
         val startPendingIntent = PendingIntent.getBroadcast(this, 88, startIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         val stopIntent = Intent(this, StopAlarmReceiver::class.java)
