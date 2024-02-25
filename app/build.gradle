@@ -79,14 +79,6 @@ dependencies {
     // to use Google Map
     implementation 'com.google.android.gms:play-services-maps:18.1.0'
 
-    // registerForActivityResult 때문에 추가
-//    implementation 'androidx.appcompat:appcompat:1.3.0-beta01'
-
-    // JSON으로 serialize and deserialize
-    implementation 'com.google.code.gson:gson:2.8.9'
-    // 에러 나서 아래 두 줄 추가함
-//    implementation 'org.chromium.net:cronet-android:VERSION'
-//    implementation 'androidx.appcompat:appcompat:1.3.0-alpha02'
 }
 
 configurations.all {
