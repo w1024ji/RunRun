@@ -50,7 +50,7 @@ class MapViewActivity : AppCompatActivity(), OnMapReadyCallback, OnMapsSdkInitia
         setContentView(R.layout.google_map)
 
         busDataList = intent.parcelableArrayList<BusParcelable>("busDataList")
-        Log.d("MapViewActivity", "인텐트로 받은 busDataList: $busDataList") // [BusParcelable(arsId=10710, nodeId=109900167, routeId=109900010, xCoordinate=127.0472314, yCoordinate=37.6610589, routeName=노원15, sequence=27, stationName=창동아이파크), BusParcelable(arsId=10714, nodeId=109900169, routeId=109900010, xCoordinate=127.0473835, yCoordinate=37.66086168, routeName=노원15, sequence=56, stationName=창동아이파크)]
+        Log.d("MapViewActivity", "인텐트로 받은 busDataList: $busDataList")
         setupMapView(savedInstanceState)
     }
 
@@ -128,7 +128,6 @@ class MapViewActivity : AppCompatActivity(), OnMapReadyCallback, OnMapsSdkInitia
             for (busData in busDataList!!) {
                 val latitude = busData.yCoordinate.toDoubleOrNull() ?: 0.0
                 val longitude = busData.xCoordinate.toDoubleOrNull() ?: 0.0
-//                Log.d("onMapReady()", "latitiude 값: $latitude, longitude 값: $longitude")
                 val location = LatLng(latitude, longitude)
                 Log.d("onMapReady()", "location 값: $location")
                 val marker = map.addMarker(MarkerOptions().position(location))
