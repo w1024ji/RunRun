@@ -29,7 +29,7 @@
             android:name=".MainScreen"
             android:exported="false" />
         <activity
-            android:name=".AfterSetting"
+            android:name=".ListOfAlarm"
             android:exported="false" />
 
         <receiver

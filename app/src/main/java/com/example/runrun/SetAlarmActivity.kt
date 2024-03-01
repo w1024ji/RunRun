@@ -117,7 +117,7 @@ class SetAlarmActivity : AppCompatActivity() {
     }
 
     private fun goToafterSet(){
-        val afterSetIntent = Intent(this, AfterSetting::class.java)
+        val afterSetIntent = Intent(this, ListOfAlarm::class.java)
         startActivity(afterSetIntent)
     }
 
