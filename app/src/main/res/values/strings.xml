@@ -35,4 +35,6 @@
     <string name="congrats">Congratulations! \nWeekly Alarm is successfully set.</string>
     <string name="returnTo">return to main</string>
     <string name="mainDescription">welcome to main page</string>
+    <string name="drawer_opened">드로어가 열림</string>
+    <string name="drawer_closed">드로어가 닫힘\n</string>
 </resources>
