@@ -1,8 +1,11 @@
-package com.example.ch18_image
+package com.example.runrun
 
+import android.net.Uri
 import com.tickaroo.tikxml.annotation.Element
 import com.tickaroo.tikxml.annotation.PropertyElement
 import com.tickaroo.tikxml.annotation.Xml
+import retrofit2.http.Url
+
 
 @Xml(name="response")
 data class XmlResponse(
@@ -25,15 +28,7 @@ data class myXmlItems(
 @Xml(name="item")
 data class myXmlItem(
     @PropertyElement
-    val prdlstNm:String?,
-    @PropertyElement
-    val nutrient:String?,
-    @PropertyElement
-    val manufacture:String?,
-    @PropertyElement
-    val imgurl1:String?,
-    @PropertyElement
-    val imgurl2:String?
+    val satImgC: String?
 ) {
-    constructor() : this(null, null, null, null, null)
+    constructor() : this( null)
 }

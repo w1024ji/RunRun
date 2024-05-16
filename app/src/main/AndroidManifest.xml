@@ -11,7 +11,8 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- special service -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
 
     <application
         android:allowBackup="true"
@@ -25,8 +26,13 @@
         android:usesCleartextTraffic="false"
         tools:remove="android:appComponentFactory"
         tools:targetApi="31">
+
+        
         <activity
-            android:name=".MainScreen"
+            android:name=".ConfirmActivity"
+            android:exported="false" />
+        <activity
+            android:name=".TwoInputs"
             android:exported="false" />
         <activity
             android:name=".ListOfAlarm"
@@ -41,7 +47,16 @@
         <service
             android:name=".MyForegroundService"
             android:enabled="true"
-            android:exported="true" /> <!-- Didn't find class "androidx.core.app.CoreComponentFactory" 에러 때문에 추가함 -->
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="explanation_for_special_use" />
+        </service> <!-- <service -->
+        <!-- android:name=".MyForegroundService" -->
+        <!-- android:foregroundServiceType="shortService" -->
+        <!-- android:enabled="true" -->
+        <!-- android:exported="true" /> &lt;!&ndash; Didn't find class "androidx.core.app.CoreComponentFactory" 에러 때문에 추가함 &ndash;&gt; -->
         <!-- 위에 android:usesCleartextTraffic="false" 모든 url허용을 true에서 false로 바꿈. -->
         <!-- Google Map 사용하려고 아래 다섯 줄 추가함 -->
         <uses-library
@@ -67,7 +82,7 @@
             android:name=".MapViewActivity"
             android:exported="true" />
         <activity
-            android:name=".TwoInputs"
+            android:name=".MainScreenActivity"
             android:configChanges="orientation|screenSize"
             android:exported="true"
             android:theme="@style/AppTheme">

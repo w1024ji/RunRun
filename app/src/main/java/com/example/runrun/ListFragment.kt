@@ -1,10 +1,17 @@
 package com.example.runrun
 
+import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.runrun.databinding.FragmentListBinding
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -13,13 +20,16 @@ private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
- * Use the [AddFragment.newInstance] factory method to
+ * Use the [ListFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class AddFragment : Fragment() {
+class ListFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    // binding
+    lateinit var binding : FragmentListBinding
+    private var datas: MutableList<NotificationItem> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,8 +44,41 @@ class AddFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_add, container, false)
-    }
+        binding = FragmentListBinding.inflate(inflater, container, false)
+
+        // Retrieve arguments from the bundle
+        Log.d("ListFragment", "arguments값: $arguments")
+        // Retrieve arguments from the bundle
+        arguments?.let {
+            val notiNm = it.getString("notiNm")
+            val busNm = it.getString("busNm")
+            val staNm = it.getString("staNm")
+            val selectedDays = it.getString("selectedDays")
+            val whenToWhen = it.getString("whenToWhen")
+
+            if (notiNm != null && busNm != null && staNm != null && selectedDays != null && whenToWhen != null) {
+                val notificationItem = NotificationItem(notiNm, busNm, staNm, selectedDays, whenToWhen)
+                datas.add(notificationItem)
+            }
+        }
+
+        /* Setup the RecyclerView */
+        // Setup the RecyclerView
+        val adapter = MyAdapter(datas)
+        binding.recyclerView.adapter = adapter
+        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerView.addItemDecoration(DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL))
+
+        // 플로팅 액션 버튼이 눌려지면 AddFragment로 넘어가
+        binding.mainFab.setOnClickListener {
+            val intent = Intent(requireContext(), AddFragment::class.java)
+            Log.d("ListFragment", "플로팅 버튼 누름. 인텐트 값: $intent")
+            startActivity(intent)
+        }
+
+        return binding.root
+    } // onCreateView()
+
 
     companion object {
         /**
@@ -49,7 +92,7 @@ class AddFragment : Fragment() {
         // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-            AddFragment().apply {
+            ListFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)
