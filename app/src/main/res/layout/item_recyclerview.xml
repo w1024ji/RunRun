@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/item_root"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="16dp"
+    android:layout_margin="8dp">
+    <ImageView
+        android:layout_width="90dp"
+        android:layout_height="100dp"
+        android:src="@drawable/penny2"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+        <TextView
+            android:id="@+id/recyNotiNm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:text="notinm"
+            android:textSize="16dp"
+            android:layout_marginLeft="30dp"
+            />
+
+        <TextView
+            android:id="@+id/recyBus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bus Name"
+            android:textSize="14dp"
+            android:layout_marginLeft="30dp"
+            />
+
+        <TextView
+            android:id="@+id/recyStation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Station Name"
+            android:textSize="14dp"
+            android:layout_marginLeft="30dp"
+            />
+
+        <TextView
+            android:id="@+id/recySelectedDays"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Selected Days"
+            android:textSize="14dp"
+            android:layout_marginLeft="30dp"
+            />
+
+        <TextView
+            android:id="@+id/recyWhentoWhen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="When to When"
+            android:textSize="14dp"
+            android:layout_marginLeft="30dp"
+            />
+
+
+    </LinearLayout>
+</LinearLayout>

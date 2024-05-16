@@ -29,8 +29,11 @@ class SetAlarmActivity : AppCompatActivity() {
     private lateinit var routeId : String
     private lateinit var nodeId : String
     private lateinit var notiNm : TextView
+    lateinit var busNm : String
+    lateinit var staNm : String
 
     lateinit var busData : BusParcelable
+    lateinit var selectedDays : MutableList<Int>
 
     inline fun <reified BusParcelable : Parcelable> Intent.parcelable(key: String): BusParcelable? = when {
         SDK_INT >= 33 -> getParcelableExtra(key, BusParcelable::class.java)
@@ -53,6 +56,9 @@ class SetAlarmActivity : AppCompatActivity() {
 
         // MapViewActivity에서 전달된 데이터를 받아옴
         busData = intent.parcelable("busData")!!
+
+        busNm = busData.routeName
+        staNm = busData.stationName
 
         routeNm.text = busData.routeName
         stationNm.text = busData.stationName
@@ -93,10 +99,11 @@ class SetAlarmActivity : AppCompatActivity() {
             timePickerDialog.show()
         }
 
+
         setAlarmButton.setOnClickListener {
             Log.d("SetAlarmActivity", "Set Alarm 버튼 클릭")
 
-            val selectedDays = mutableListOf<Int>()
+            selectedDays = mutableListOf<Int>()
             for (i in 0 until dayChipGroup.childCount) {
                 val chip = dayChipGroup.getChildAt(i) as Chip
                 if (chip.isChecked) {
@@ -111,14 +118,39 @@ class SetAlarmActivity : AppCompatActivity() {
                     }
                 }
             }
+            Log.d("SetAlarmActivity", "selectedDays: $selectedDays")
             scheduleAlarm(startHour, startMinute, endHour, endMinute, selectedDays)
-            goToafterSet()
+            goToConfirmActivity() // 알람 세팅 끝났으면 컨펌 화면으로 넘기기
         }
-    }
+    } // onCreate()
 
-    private fun goToafterSet(){
-        val afterSetIntent = Intent(this, ListOfAlarm::class.java)
-        startActivity(afterSetIntent)
+    // 알람 세팅 끝났으면 ConfimActivity로 화면 전환
+    private fun goToConfirmActivity(){
+        var days: MutableList<String> = mutableListOf()
+
+        for (i in 0 until selectedDays.size) {
+            when (selectedDays[i]) {
+                1 -> days.add("sunday")
+                2 -> days.add("monday")
+                3 -> days.add("tuesday")
+                4 -> days.add("wednesday")
+                5 -> days.add("thursday")
+                6 -> days.add("friday")
+                7 -> days.add("saturday")
+            }
+        }
+        val confirmIntent = Intent(this, ConfirmActivity::class.java)
+        confirmIntent.putExtra("notiNm", "알람 이름: ${notiNm.text}") // 알람 이름
+        confirmIntent.putExtra("busNm", "버스 이름: $busNm") // 버스
+        confirmIntent.putExtra("staNm", "정류장 이름: $staNm") // 정류장
+        confirmIntent.putExtra("selectedDays", "선택한 요일: ${days}") // 요일
+        val whenToWhen = "$startHour:$startMinute~$endHour:$endMinute"
+        confirmIntent.putExtra("whenToWhen", whenToWhen)
+//        confirmIntent.putExtra("startHour", "$startHour 시") // 시작 시
+//        confirmIntent.putExtra("startMinute", "$startMinute 분") // 시작 분
+//        confirmIntent.putExtra("endHour", "$endHour 시") // 완료 시
+//        confirmIntent.putExtra("endMinute", "$endMinute 분") // 완료 분
+        startActivity(confirmIntent)
     }
 
     // 알림을 스케줄링하는 메서드

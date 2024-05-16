@@ -11,7 +11,7 @@ class ListOfAlarm : AppCompatActivity() {
         setContentView(R.layout.activity_after_setting)
 
         val returnTo : Button = findViewById(R.id.returnTo)
-        val mainIntent = Intent(this, MainScreen::class.java)
+        val mainIntent = Intent(this, MainScreenActivity::class.java)
 
         returnTo.setOnClickListener{
             startActivity(mainIntent)
