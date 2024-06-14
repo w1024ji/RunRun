@@ -63,16 +63,15 @@ class SatelliteFragment : Fragment() {
             currentDate.toInt()
         )
 
-        call?.enqueue(object : Callback<XmlResponse> {
+        call.enqueue(object : Callback<XmlResponse> {
             override fun onResponse(call: Call<XmlResponse>, response: Response<XmlResponse>) {
                 if(response.isSuccessful){
                     Log.d("SatelliteFragment", "onResponse(): ${call.request()}")
-                    Log.d("SatelliteFragment", "response값: $response")
                     Log.d("SatelliteFragment", "response.body()값: ${response.body()}")
-                    val desiredTime = "202405150400" // Replace with your desired timestamp
+                    val desiredTime = "202405260400"
                     val desiredTimeRegex = Regex(desiredTime)
-                    // Check if response body and item exist
                     val body = response.body()?.body
+
                     if (body?.items != null) {
                         Log.d("SatelliteFragment", "body?items가 null이 아니라면")
                         val imageUrls = body.items.item // Use list directly

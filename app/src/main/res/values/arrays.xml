@@ -1,0 +1,14 @@
+<resources>
+    <!-- Reply Preference -->
+    <string-array name="my_color">
+        <item>빨강</item>
+        <item>초록</item>
+        <item>파랑</item>
+    </string-array>
+
+    <string-array name="my_color_values">
+        <item>#ff0000</item>
+        <item>#00ff00</item>
+        <item>#0000ff</item>
+    </string-array>
+</resources>
