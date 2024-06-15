@@ -1,26 +1,28 @@
 package com.example.runrun
 
+import NetworkService
 import com.tickaroo.tikxml.TikXml
-import com.tickaroo.tikxml.retrofit.TikXmlConverterFactory
 import retrofit2.Retrofit
+import com.tickaroo.tikxml.retrofit.TikXmlConverterFactory
 
-class RetrofitConnection{
+class RetrofitConnection {
 
-    //객체를 하나만 생성하는 싱글턴 패턴을 적용합니다.
     companion object {
-        //API 서버의 주소가 BASE_URL이 됩니다.
         private const val BASE_URL = "http://apis.data.go.kr/1360000/SatlitImgInfoService/"
 
-        var xmlNetworkService : NetworkService
-        val parser = TikXml.Builder().exceptionOnUnreadXml(false).build()
-        val xmlRetrofit : Retrofit
-            get() = Retrofit.Builder()
+        val parser = TikXml.Builder()
+            .exceptionOnUnreadXml(false)  // Enable exceptions for unread XML
+            .build()
+
+        val xmlRetrofit : Retrofit by lazy {
+            Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(TikXmlConverterFactory.create(parser))
                 .build()
+        }
 
-        init{
-            xmlNetworkService = xmlRetrofit.create(NetworkService::class.java)
+        val xmlNetworkService : NetworkService by lazy {
+            xmlRetrofit.create(NetworkService::class.java)
         }
     }
 }

@@ -1,34 +1,33 @@
-package com.example.runrun
-
-import android.net.Uri
 import com.tickaroo.tikxml.annotation.Element
 import com.tickaroo.tikxml.annotation.PropertyElement
 import com.tickaroo.tikxml.annotation.Xml
-import retrofit2.http.Url
 
-
-@Xml(name="response")
+@Xml(name = "response")
 data class XmlResponse(
     @Element
-    val body : myXmlBody
+    val body: MyXmlBody
 )
 
-@Xml(name="body")
-data class myXmlBody(
+@Xml(name = "body")
+data class MyXmlBody(
     @Element
-    val items : myXmlItems
+    val items: MyXmlItems
 )
 
-@Xml(name="items")
-data class myXmlItems(
+@Xml(name = "items")
+data class MyXmlItems(
     @Element
-    val item : MutableList<myXmlItem>
+    val item: MutableList<MyXmlItem> //item에는 내용이 많아서
 )
 
-@Xml(name="item")
-data class myXmlItem(
+@Xml(name = "item")
+data class MyXmlItem(
     @PropertyElement
-    val satImgC: String?
-) {
-    constructor() : this( null)
-}
+    val satImgCFiles: String? = null
+)
+
+
+//@Xml
+//data class SatImgCFile(
+//    @PropertyElement val value: String? = null
+//)

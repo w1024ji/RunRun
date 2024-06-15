@@ -1,11 +1,13 @@
 package com.example.runrun
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
@@ -59,25 +61,62 @@ class ListFragment : Fragment() {
             if (notiNm != null && busNm != null && staNm != null && selectedDays != null && whenToWhen != null) {
                 val notificationItem = NotificationItem(notiNm, busNm, staNm, selectedDays, whenToWhen)
                 datas.add(notificationItem)
+
+                val fireData = mapOf(
+                    "notiNm" to notiNm,
+                    "busNm" to busNm,
+                    "staNm" to staNm,
+                    "selectedDays" to selectedDays,
+                    "whenToWhen" to whenToWhen
+                )
+                MyApplication.db.collection("bus_notifications")
+                    .add(fireData)
+                    .addOnSuccessListener {
+                        Toast.makeText(requireContext(), "데이터 저장 성공!", Toast.LENGTH_LONG).show()
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(requireContext(), "데이터 저장 실패...", Toast.LENGTH_LONG).show()
+                    }
+
             }
         }
 
-        /* Setup the RecyclerView */
         // Setup the RecyclerView
         val adapter = MyAdapter(datas)
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.addItemDecoration(DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL))
 
-        // 플로팅 액션 버튼이 눌려지면 AddFragment로 넘어가
         binding.mainFab.setOnClickListener {
-            val intent = Intent(requireContext(), AddFragment::class.java)
-            Log.d("ListFragment", "플로팅 버튼 누름. 인텐트 값: $intent")
-            startActivity(intent)
+            if (MyApplication.checkAuth()) {
+                listener?.onFabClick()
+            } else {
+                Toast.makeText(requireContext(), "인증을 먼저 진행해주세요!", Toast.LENGTH_LONG).show()
+            }
         }
 
         return binding.root
     } // onCreateView()
+
+    private var listener: OnFabClickListener? = null
+
+    interface OnFabClickListener {
+        fun onFabClick()
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is OnFabClickListener) {
+            listener = context
+        } else {
+            throw RuntimeException("$context must implement OnFabClickListener~~!")
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        listener = null
+    }
 
 
     companion object {
