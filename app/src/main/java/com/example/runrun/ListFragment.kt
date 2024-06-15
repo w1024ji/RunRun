@@ -1,11 +1,13 @@
 package com.example.runrun
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
@@ -69,15 +71,52 @@ class ListFragment : Fragment() {
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.addItemDecoration(DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL))
 
+        /*
         // 플로팅 액션 버튼이 눌려지면 AddFragment로 넘어가
         binding.mainFab.setOnClickListener {
-            val intent = Intent(requireContext(), AddFragment::class.java)
-            Log.d("ListFragment", "플로팅 버튼 누름. 인텐트 값: $intent")
-            startActivity(intent)
+            // 만약 사용자가 로그인 상태라면..
+            if(MyApplication.checkAuth()){
+                TODO()
+                val intent = Intent(requireContext(), AddFragment::class.java)
+                Log.d("ListFragment", "플로팅 버튼 누름. 인텐트 값: $intent")
+                startActivity(intent)
+            }
+            else {
+                Toast.makeText(requireContext(), "인증을 먼저 진행해주세요!", Toast.LENGTH_LONG).show()
+            }
+        }
+
+         */
+        binding.mainFab.setOnClickListener {
+            if (MyApplication.checkAuth()) {
+                listener?.onFabClick()
+            } else {
+                Toast.makeText(requireContext(), "인증을 먼저 진행해주세요!", Toast.LENGTH_LONG).show()
+            }
         }
 
         return binding.root
     } // onCreateView()
+
+    private var listener: OnFabClickListener? = null
+
+    interface OnFabClickListener {
+        fun onFabClick()
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is OnFabClickListener) {
+            listener = context
+        } else {
+            throw RuntimeException("$context must implement OnFabClickListener~~!")
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        listener = null
+    }
 
 
     companion object {
