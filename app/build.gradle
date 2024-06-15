@@ -30,6 +30,7 @@ android {
         //service key 지정
         buildConfigField "String", "SERVICE_KEY", properties['serviceKey']
         buildConfigField "String", "GOOGLE_MAP_API", properties['google_map_api']
+        buildConfigField "String", "DECODING_SERVICE_KEY", properties['decoding_serviceKey']
 
         applicationId "com.example.runrun"
         minSdk 24

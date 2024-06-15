@@ -1,11 +1,13 @@
 package com.example.runrun
 
+import XmlResponse
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.example.runrun.databinding.FragmentSatelliteBinding
 import retrofit2.Call
@@ -54,7 +56,7 @@ class SatelliteFragment : Fragment() {
         Log.d("SatelliteFragment", "현재 년월일 값: $currentDate") // e.g) 20240515
 
         val call: Call<XmlResponse> = RetrofitConnection.xmlNetworkService.getXmlList(
-            "asPqYsCGu0sX+rVYZ4ldsfkjQ1XBX2tvvtIOS8Wl2gbdG4wIDzLlmWdFgZ64SZ61YqPDqjb0OKXe8LB8W7XMmw==", // Decoding
+            BuildConfig.DECODING_SERVICE_KEY, // Decoding
             1,
             10,
             "g2",
@@ -65,28 +67,26 @@ class SatelliteFragment : Fragment() {
 
         call.enqueue(object : Callback<XmlResponse> {
             override fun onResponse(call: Call<XmlResponse>, response: Response<XmlResponse>) {
-                if(response.isSuccessful){
+                if (response.isSuccessful) {
                     Log.d("SatelliteFragment", "onResponse(): ${call.request()}")
                     Log.d("SatelliteFragment", "response.body()값: ${response.body()}")
-                    val desiredTime = "202405260400"
-                    val desiredTimeRegex = Regex(desiredTime)
-                    val body = response.body()?.body
 
-                    if (body?.items != null) {
-                        Log.d("SatelliteFragment", "body?items가 null이 아니라면")
-                        val imageUrls = body.items.item // Use list directly
+                    val item = response.body()?.body?.items?.item
+                    if (item != null) {
+                        val imageUrl = item.firstOrNull()?.satImgCFiles
+                        Log.d("SatelliteFragment", "First image URL: $imageUrl")
 
-                        for (imageUrl in imageUrls) {
-                            if (desiredTimeRegex.matches(imageUrl.toString())) {
-                                Log.d("SatelliteFragment", "시간에 맞는 png 선택")
-                                Glide.with(binding.root)
-                                    .load(imageUrl)
-                                    .override(500, 500)
-                                    .into(binding.satelliteImageView)
-                                break
-                            }
+                        if (!imageUrl.isNullOrEmpty()) {
+                            // Use Glide to load the image into the ImageView
+                            Glide.with(requireContext())
+                                .load(imageUrl)
+                                .into(binding.satelliteImageView) // Assuming you have an ImageView in your layout with ID imageView
+                        } else {
+                            Toast.makeText(context, "No image URL available", Toast.LENGTH_SHORT).show()
                         }
                     }
+                } else {
+                    Log.d("SatelliteFragment", "Response was not successful")
                 }
             }
 

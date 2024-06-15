@@ -61,32 +61,32 @@ class ListFragment : Fragment() {
             if (notiNm != null && busNm != null && staNm != null && selectedDays != null && whenToWhen != null) {
                 val notificationItem = NotificationItem(notiNm, busNm, staNm, selectedDays, whenToWhen)
                 datas.add(notificationItem)
+
+                val fireData = mapOf(
+                    "notiNm" to notiNm,
+                    "busNm" to busNm,
+                    "staNm" to staNm,
+                    "selectedDays" to selectedDays,
+                    "whenToWhen" to whenToWhen
+                )
+                MyApplication.db.collection("bus_notifications")
+                    .add(fireData)
+                    .addOnSuccessListener {
+                        Toast.makeText(requireContext(), "데이터 저장 성공!", Toast.LENGTH_LONG).show()
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(requireContext(), "데이터 저장 실패...", Toast.LENGTH_LONG).show()
+                    }
+
             }
         }
 
-        /* Setup the RecyclerView */
         // Setup the RecyclerView
         val adapter = MyAdapter(datas)
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.addItemDecoration(DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL))
 
-        /*
-        // 플로팅 액션 버튼이 눌려지면 AddFragment로 넘어가
-        binding.mainFab.setOnClickListener {
-            // 만약 사용자가 로그인 상태라면..
-            if(MyApplication.checkAuth()){
-                TODO()
-                val intent = Intent(requireContext(), AddFragment::class.java)
-                Log.d("ListFragment", "플로팅 버튼 누름. 인텐트 값: $intent")
-                startActivity(intent)
-            }
-            else {
-                Toast.makeText(requireContext(), "인증을 먼저 진행해주세요!", Toast.LENGTH_LONG).show()
-            }
-        }
-
-         */
         binding.mainFab.setOnClickListener {
             if (MyApplication.checkAuth()) {
                 listener?.onFabClick()

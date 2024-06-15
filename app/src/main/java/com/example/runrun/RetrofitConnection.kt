@@ -1,5 +1,6 @@
 package com.example.runrun
 
+import NetworkService
 import com.tickaroo.tikxml.TikXml
 import retrofit2.Retrofit
 import com.tickaroo.tikxml.retrofit.TikXmlConverterFactory

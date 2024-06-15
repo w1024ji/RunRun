@@ -16,6 +16,7 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.preference.PreferenceManager
@@ -39,7 +40,7 @@ class MainScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
     private lateinit var fab: FloatingActionButton
 
 
-    class MyFragmentPagerAdapter(activity: FragmentActivity, private val notiNm: String, private val busNm: String, private val staNm: String, private val selectedDays: String, private val whenToWhen: String) : FragmentStateAdapter(activity) {
+    class MyFragmentPagerAdapter(activity: FragmentActivity, private val notiNm: String?, private val busNm: String?, private val staNm: String?, private val selectedDays: String?, private val whenToWhen: String?) : FragmentStateAdapter(activity) {
         private val fragments: List<Fragment>
 
         init {
@@ -73,28 +74,20 @@ class MainScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         Log.d("MainScreenActivity", "onCreate() 실행. onSavedInstanceState값: $savedInstanceState")
         super.onCreate(savedInstanceState)
         binding = ActivityMainScreenBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         // ConfirmActivity가 보낸 인텐트 데이터 받기
-        val notiNm = intent.getStringExtra("notiNm") ?: ""
-        val busNm = intent.getStringExtra("busNm") ?: ""
-        val staNm = intent.getStringExtra("staNm") ?: ""
-        val selectedDays = intent.getStringExtra("selectedDays") ?: ""
-        val whenToWhen = intent.getStringExtra("whenToWhen") ?: ""
+        val notiNm = intent.getStringExtra("notiNm")
+        val busNm = intent.getStringExtra("busNm")
+        val staNm = intent.getStringExtra("staNm")
+        val selectedDays = intent.getStringExtra("selectedDays")
+        val whenToWhen = intent.getStringExtra("whenToWhen")
         Log.d("MainScreenActivity", "intent로 받은 notiNm값: $notiNm , busNm값: $busNm, staNm값: $staNm, selectedDays값: $selectedDays, whenToWhen값: $whenToWhen")
 
-        /*
-        // Setup ViewPager with the adapter
-        val adapter = MyFragmentPagerAdapter(this, notiNm, busNm, staNm, selectedDays, whenToWhen)
-        binding.viewpager.adapter = adapter
-        TabLayoutMediator(binding.tabs, binding.viewpager) { tab, position ->
-            tab.text = "TAB ${position + 1}"
-        }.attach()
-
-         */
         // Initialize ViewPager and TabLayout
         viewPager = binding.viewpager
         tabLayout = binding.tabs
@@ -127,11 +120,9 @@ class MainScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {
-                // No action needed
             }
 
             override fun onTabReselected(tab: TabLayout.Tab) {
-                // No action needed
             }
         })
 
@@ -139,8 +130,7 @@ class MainScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         toggle = ActionBarDrawerToggle(this, binding.drawer, R.string.drawer_opened, R.string.drawer_closed)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         toggle.syncState()
-        // drawer에서 메뉴를 처리하기 위해서
-        binding.mainDrawerView.setNavigationItemSelectedListener(this)
+        binding.mainDrawerView.setNavigationItemSelectedListener(this) // drawer에서 메뉴를 처리하기 위해서
 
         // auth 로그인 구현 중
         headerView = binding.mainDrawerView.getHeaderView(0) // 내비게이션 뷰의 헤더 레이아웃
@@ -154,11 +144,9 @@ class MainScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
             else if (button.text.equals("로그아웃")){
                 intent.putExtra("status", "login")
             }
-
             startActivity(intent)
             binding.drawer.closeDrawers()
         }
-
     } // onCreate()
 
     override fun onStart() {
