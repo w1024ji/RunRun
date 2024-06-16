@@ -68,6 +68,8 @@ class AuthActivity : AppCompatActivity() {
                         if(MyApplication.checkAuth()){  // 앱 내 모두가 적용되는 거니까 MyApplication으로..
                             MyApplication.email = email
                             Log.d("AuthActivity", "로그인 성공")
+                            Toast.makeText(baseContext,"이메일 인증이 성공!",Toast.LENGTH_SHORT).show()
+
                             finish()
                         }
                         else{

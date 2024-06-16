@@ -2,6 +2,7 @@ package com.example.runrun
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,10 +11,13 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.runrun.databinding.FragmentListBinding
+import com.google.firebase.firestore.DocumentReference
+import java.text.SimpleDateFormat
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -32,6 +36,7 @@ class ListFragment : Fragment() {
     // binding
     lateinit var binding : FragmentListBinding
     private var datas: MutableList<NotificationItem> = mutableListOf()
+    private var uri : Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,36 +62,43 @@ class ListFragment : Fragment() {
             val staNm = it.getString("staNm")
             val selectedDays = it.getString("selectedDays")
             val whenToWhen = it.getString("whenToWhen")
+            uri = (it.getString("uri")?.toUri() ?: "") as Uri // 이미지 업로드 구현 중...
+            Log.d("ListFragment", "onCreateView-arguments.let{}에서 uri값: $uri")
 
             if (notiNm != null && busNm != null && staNm != null && selectedDays != null && whenToWhen != null) {
-                val notificationItem = NotificationItem(notiNm, busNm, staNm, selectedDays, whenToWhen)
-                datas.add(notificationItem)
+//                val notificationItem = NotificationItem(notiNm, busNm, staNm, selectedDays, whenToWhen)
+//                datas.add(notificationItem)
 
                 val fireData = mapOf(
                     "notiNm" to notiNm,
                     "busNm" to busNm,
                     "staNm" to staNm,
                     "selectedDays" to selectedDays,
-                    "whenToWhen" to whenToWhen
+                    "whenToWhen" to whenToWhen,
                 )
+                // Firestore DB에 저장하기
                 MyApplication.db.collection("bus_notifications")
                     .add(fireData)
                     .addOnSuccessListener {
                         Toast.makeText(requireContext(), "데이터 저장 성공!", Toast.LENGTH_LONG).show()
+                        Log.d("ListFragment", "데이터 저장 성공!!!")
+                        uploadImage(it.id)
                     }
                     .addOnFailureListener {
                         Toast.makeText(requireContext(), "데이터 저장 실패...", Toast.LENGTH_LONG).show()
+                        Log.d("ListFragment", "데이터 저장 실패..")
                     }
 
             }
         }
 
+        /*
         // Setup the RecyclerView
         val adapter = MyAdapter(datas)
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.addItemDecoration(DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL))
-
+         */
         binding.mainFab.setOnClickListener {
             if (MyApplication.checkAuth()) {
                 listener?.onFabClick()
@@ -97,6 +109,42 @@ class ListFragment : Fragment() {
 
         return binding.root
     } // onCreateView()
+
+    private fun uploadImage(docId : String) {
+        val imageRef = MyApplication.storage.reference.child("images/${docId}.jpg")
+        Log.d("ListFragment", "uri값: $uri")
+        val uploadTask = uri?.let { imageRef.putFile(it) }
+        uploadTask?.addOnSuccessListener {
+            Toast.makeText(requireContext(), "사진 업로드 성공!", Toast.LENGTH_LONG).show()
+        }
+        uploadTask?.addOnFailureListener {
+            Toast.makeText(requireContext(), "사진 업로드 실패..", Toast.LENGTH_LONG).show()
+
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        if(MyApplication.checkAuth()){
+            MyApplication.db.collection("bus_notifications")
+                .get()
+                .addOnSuccessListener { result ->
+                    val notiList = mutableListOf<NotificationItem>()
+                    for(document in result){
+                        val noti = document.toObject(NotificationItem::class.java)
+                        noti.docId = document.id    // docId는 별도로 처리
+                        notiList.add(noti)
+                        Log.d("ListFragment", "db에서 가져오기. noti값: $noti, noti.docId값: ${noti.docId}")
+                    }
+                    binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+                    binding.recyclerView.adapter = MyAdapter(requireContext(), notiList)
+                }
+                .addOnFailureListener {
+                    Toast.makeText(requireContext(), "서버 데이터 획득 실패", Toast.LENGTH_LONG).show()
+                }
+        }
+    }
 
     private var listener: OnFabClickListener? = null
 

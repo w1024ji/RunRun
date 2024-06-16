@@ -23,7 +23,7 @@
     <string name="selected_station_name">Selected Station Name</string>
     <string name="pick_a_day">pick a day</string>
     <string name="pick_a_time">pick a time</string>
-    <string name="name_of_notification">name of notification</string>
+    <string name="name_of_notification">알림 이름을 입력해주세요</string>
     <string name="next">NEXT</string>
     <string name="monday">Monday</string>
     <string name="tuesday">Tuesday</string>

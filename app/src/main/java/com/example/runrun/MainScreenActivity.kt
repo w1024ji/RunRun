@@ -3,7 +3,6 @@ package com.example.runrun
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
-import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -16,7 +15,6 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.preference.PreferenceManager
@@ -37,10 +35,8 @@ class MainScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
     lateinit var headerView : View
     private lateinit var viewPager: ViewPager2
     private lateinit var tabLayout: TabLayout
-    private lateinit var fab: FloatingActionButton
 
-
-    class MyFragmentPagerAdapter(activity: FragmentActivity, private val notiNm: String?, private val busNm: String?, private val staNm: String?, private val selectedDays: String?, private val whenToWhen: String?) : FragmentStateAdapter(activity) {
+    class MyFragmentPagerAdapter(activity: FragmentActivity, private val notiNm: String?, private val busNm: String?, private val staNm: String?, private val selectedDays: String?, private val whenToWhen: String?, private val uri: String?) : FragmentStateAdapter(activity) {
         private val fragments: List<Fragment>
 
         init {
@@ -51,15 +47,15 @@ class MainScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
                     putString("staNm", staNm)
                     putString("selectedDays", selectedDays)
                     putString("whenToWhen", whenToWhen)
+                    Log.d("MainScreenActivity", "MyFragmentPagerAdapter-uri값: $uri")
+                    putString("uri", uri.toString()) // 이미지 업로드 구현 중
                 }
             }
             fragments = listOf(listFragment, AddFragment(), WeatherFragment(), SatelliteFragment())
         }
-
         override fun getItemCount(): Int {
             return fragments.size
         }
-
         override fun createFragment(position: Int): Fragment {
             return fragments[position]
         }
@@ -86,13 +82,14 @@ class MainScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         val staNm = intent.getStringExtra("staNm")
         val selectedDays = intent.getStringExtra("selectedDays")
         val whenToWhen = intent.getStringExtra("whenToWhen")
-        Log.d("MainScreenActivity", "intent로 받은 notiNm값: $notiNm , busNm값: $busNm, staNm값: $staNm, selectedDays값: $selectedDays, whenToWhen값: $whenToWhen")
+        var uri = intent.getStringExtra("uri") // 이미지 업로드 구현 중
+        Log.d("MainScreenActivity", "onCreate()-intent로 받은 uri값: $uri")
 
         // Initialize ViewPager and TabLayout
         viewPager = binding.viewpager
         tabLayout = binding.tabs
 
-        val adapter = MyFragmentPagerAdapter(this, notiNm, busNm, staNm, selectedDays, whenToWhen)
+        val adapter = MyFragmentPagerAdapter(this, notiNm, busNm, staNm, selectedDays, whenToWhen, uri)
         viewPager.adapter = adapter
 
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
@@ -118,10 +115,8 @@ class MainScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
                     }
                 }
             }
-
-            override fun onTabUnselected(tab: TabLayout.Tab) {
+            override fun onTabUnselected(p0: TabLayout.Tab?) {
             }
-
             override fun onTabReselected(tab: TabLayout.Tab) {
             }
         })

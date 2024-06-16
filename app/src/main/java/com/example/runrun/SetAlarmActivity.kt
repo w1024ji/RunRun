@@ -7,13 +7,20 @@ import android.app.PendingIntent
 import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
 import android.os.Parcelable
+import android.provider.MediaStore
 import android.util.Log
+import android.view.View
 import android.widget.Button
+import android.widget.ImageView
+import android.widget.MediaController
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import java.util.*
@@ -35,6 +42,9 @@ class SetAlarmActivity : AppCompatActivity() {
     lateinit var busData : BusParcelable
     lateinit var selectedDays : MutableList<Int>
 
+    // 이미지 업로드
+    lateinit var uri : Uri
+
     inline fun <reified BusParcelable : Parcelable> Intent.parcelable(key: String): BusParcelable? = when {
         SDK_INT >= 33 -> getParcelableExtra(key, BusParcelable::class.java)
         else -> @Suppress("DEPRECATION") getParcelableExtra(key) as? BusParcelable
@@ -53,6 +63,9 @@ class SetAlarmActivity : AppCompatActivity() {
         val routeNm : TextView = findViewById(R.id.bus01)
         val stationNm : TextView = findViewById(R.id.station01)
         notiNm = findViewById(R.id.notificationName)
+        // 이미지 업로드
+        val uploadButton : Button = findViewById(R.id.uploadButton)
+        var addImageView : ImageView = findViewById(R.id.addImageView)
 
         // MapViewActivity에서 전달된 데이터를 받아옴
         busData = intent.parcelable("busData")!!
@@ -97,6 +110,25 @@ class SetAlarmActivity : AppCompatActivity() {
                 true
             )
             timePickerDialog.show()
+        }
+
+        // 이미지 업로드 하기
+        val requestLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+            if(it.resultCode == android.app.Activity.RESULT_OK){
+                addImageView.visibility = View.VISIBLE // 이미지 뷰 다시 보이게
+                Glide
+                    .with(applicationContext)
+                    .load(it.data?.data)
+                    .override(200, 150) // 사이즈
+                    .into(addImageView)
+                uri = it.data?.data!!   // uri는 절대 null이어서는 안돼
+                Log.d("SetAlarmActivity", "uri값: $uri")
+            }
+        }
+        uploadButton.setOnClickListener {
+            val intent = Intent(Intent.ACTION_PICK)
+            intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*")
+            requestLauncher.launch(intent)
         }
 
 
@@ -146,10 +178,9 @@ class SetAlarmActivity : AppCompatActivity() {
         confirmIntent.putExtra("selectedDays", "선택한 요일: ${days}") // 요일
         val whenToWhen = "$startHour:$startMinute~$endHour:$endMinute"
         confirmIntent.putExtra("whenToWhen", whenToWhen)
-//        confirmIntent.putExtra("startHour", "$startHour 시") // 시작 시
-//        confirmIntent.putExtra("startMinute", "$startMinute 분") // 시작 분
-//        confirmIntent.putExtra("endHour", "$endHour 시") // 완료 시
-//        confirmIntent.putExtra("endMinute", "$endMinute 분") // 완료 분
+        Log.d("SetAlarmActivity", "ConfirmActivity로 보내는 인텐트 속 uri값: $uri") // content://com.google.android.apps.photos.cont...
+        confirmIntent.putExtra("uri", uri.toString()) // 이미지 uri 보내기 >>toString()꼭 해야함<<
+
         startActivity(confirmIntent)
     }
 
