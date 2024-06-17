@@ -74,7 +74,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="${google_map_api}" /> <!-- 이건 구글 지도 API키 -->
+            android:value="${google_api}" /> <!-- 이건 구글 지도 API키 -->
         <!-- 잘 되는 거 맞아? 연결 된 거 맞아??? -->
         <meta-data
             android:name="com.google.android.gms.version"

@@ -37,7 +37,7 @@ class MapViewActivity : AppCompatActivity(), OnMapReadyCallback, OnMapsSdkInitia
     private var mMapView: MapView? = null
 
     companion object {
-        private const val MAPVIEW_BUNDLE_KEY = BuildConfig.GOOGLE_MAP_API
+        private const val MAPVIEW_BUNDLE_KEY = BuildConfig.GOOGLE_API
         var busDataList : ArrayList<BusParcelable>? = null
     }
 

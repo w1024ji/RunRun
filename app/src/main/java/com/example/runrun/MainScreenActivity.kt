@@ -21,7 +21,6 @@ import androidx.preference.PreferenceManager
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.example.runrun.databinding.ActivityMainScreenBinding
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -51,7 +50,7 @@ class MainScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
                     putString("uri", uri.toString()) // 이미지 업로드 구현 중
                 }
             }
-            fragments = listOf(listFragment, AddFragment(), WeatherFragment(), SatelliteFragment())
+            fragments = listOf(listFragment, AddFragment(), YoutubeFragment(), SatelliteFragment())
         }
         override fun getItemCount(): Int {
             return fragments.size

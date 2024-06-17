@@ -29,7 +29,7 @@ android {
     defaultConfig {
         //service key 지정
         buildConfigField "String", "SERVICE_KEY", properties['serviceKey']
-        buildConfigField "String", "GOOGLE_MAP_API", properties['google_map_api']
+        buildConfigField "String", "GOOGLE_API", properties['google_api']
         buildConfigField "String", "DECODING_SERVICE_KEY", properties['decoding_serviceKey']
 
         applicationId "com.example.runrun"
@@ -110,7 +110,11 @@ dependencies {
     implementation("com.google.android.gms:play-services-auth:21.1.1")
     // storage 추가
     implementation("com.google.firebase:firebase-storage-ktx")
-
+    // youtube search 구현 하려고..
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+    // interceptor 추가
+    implementation ("com.squareup.okhttp3:logging-interceptor:4.9.0")
 
 }
 
