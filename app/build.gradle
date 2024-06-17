@@ -115,6 +115,8 @@ dependencies {
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
     // interceptor 추가
     implementation ("com.squareup.okhttp3:logging-interceptor:4.9.0")
+    // youtube 비디오를 실행하려면..
+    implementation ('com.pierfrancescosoffritti.androidyoutubeplayer:core:11.0.1')
 
 }
 
