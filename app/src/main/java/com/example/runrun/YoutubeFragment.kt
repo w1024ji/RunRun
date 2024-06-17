@@ -1,6 +1,7 @@
 package com.example.runrun
 
 import android.os.Bundle
+import android.text.Editable
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -10,9 +11,13 @@ import android.widget.Button
 import android.widget.EditText
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.runrun.databinding.FragmentYoutubeBinding
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.BufferedReader
+import java.io.File
+import java.io.OutputStreamWriter
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -31,6 +36,11 @@ class YoutubeFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    // binding
+    lateinit var binding : FragmentYoutubeBinding
+    // 사용자가 서치한 키워드
+    lateinit var keyWord : String
+    private var historyIndex = 0  // Index to keep track of the current history item
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,19 +54,69 @@ class YoutubeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_youtube, container, false)
-        val searchEditText = view.findViewById<EditText>(R.id.searchEditText)
-        val videosRecyclerView = view.findViewById<RecyclerView>(R.id.videosRecyclerView)
-        val adapter = VideoAdapter()
-        videosRecyclerView.adapter = adapter
-        videosRecyclerView.layoutManager = LinearLayoutManager(context)
+        binding = FragmentYoutubeBinding.inflate(inflater, container, false)
 
-        view.findViewById<Button>(R.id.searchButton).setOnClickListener {
-            performSearch(searchEditText.text.toString(), adapter)
+        val adapter = VideoAdapter()
+        binding.videosRecyclerView.adapter = adapter
+        binding.videosRecyclerView.layoutManager = LinearLayoutManager(context)
+
+        binding.searchButton.setOnClickListener {
+            if(binding.searchEditText.text.isNotEmpty()){         // 비어있지 않을 때만
+                keyWord = binding.searchEditText.text.toString() // history 구현 중..
+                saveHistory(keyWord)
+            }
+            performSearch(binding.searchEditText.text.toString(), adapter)
         }
 
-        return view
+        // history 버튼을 누르면 제일 최근에 검색한 이력을 searchEditText에 올리기
+        binding.historyButton.setOnClickListener {
+            binding.searchEditText.setText(getRecentHistory())
+        }
+
+        return binding.root
+    } // onCreateView()
+
+    private fun saveHistory(keyWord: String) {
+        val context = requireContext()
+        val file = File(context.filesDir, "test_History.txt")
+
+        // Check if the file exists, create if not
+        if (!file.exists()) {
+            file.createNewFile()
+        }
+
+        // Read existing keywords from the file
+        val existingKeywords = LinkedHashSet(file.readLines())
+
+        // Add the new keyword if it's not already in the set
+        if (keyWord !in existingKeywords) {
+            if (existingKeywords.size >= 5) {
+                // If there are already 5 keywords, remove the oldest one
+                val iterator = existingKeywords.iterator()
+                if (iterator.hasNext()) {
+                    iterator.next() // Move to the first
+                    iterator.remove() // Remove the oldest keyword
+                }
+            }
+            existingKeywords.add(keyWord)
+        }
+
+        // Write all keywords back to the file
+        file.writeText(existingKeywords.joinToString("\n"))
     }
+
+    private fun getRecentHistory(): String? {
+        val file = File(requireContext().filesDir, "test_History.txt")
+        val keywords = file.readLines()
+        if (keywords.isEmpty()) return null
+
+        // Calculate index to access the list from the end to the beginning
+        val reversedIndex = keywords.size - 1 - historyIndex
+        val currentKeyword = keywords.getOrNull(reversedIndex)
+        historyIndex = (historyIndex + 1) % keywords.size
+        return currentKeyword
+    }
+
 
     private fun performSearch(query: String, adapter: VideoAdapter) {
         // Call the YouTube API using Retrofit to search for videos based on the user's query

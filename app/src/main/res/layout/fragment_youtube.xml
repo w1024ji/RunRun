@@ -6,9 +6,15 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+
     <EditText
         android:id="@+id/searchEditText"
-        android:layout_width="match_parent"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:hint="Enter search terms"
         android:imeOptions="actionSearch"
@@ -19,6 +25,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Search" />
+
+    </LinearLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:textSize="12sp"
+        android:text="history"
+        android:layout_marginStart="295dp"
+        android:id="@+id/historyButton"
+        />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/videosRecyclerView"
