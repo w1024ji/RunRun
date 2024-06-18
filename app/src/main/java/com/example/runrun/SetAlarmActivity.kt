@@ -43,7 +43,8 @@ class SetAlarmActivity : AppCompatActivity() {
     lateinit var selectedDays : MutableList<Int>
 
     // 이미지 업로드
-    lateinit var uri : Uri
+    var uri : Uri? = null
+    //content://com.google.android.apps.photos.contentprovider/-1/1/content%3A%2F%2Fmedia%2Fexternal%2Fimages%2Fmedia%2F90/ORIGINAL/NONE/1815428854
 
     inline fun <reified BusParcelable : Parcelable> Intent.parcelable(key: String): BusParcelable? = when {
         SDK_INT >= 33 -> getParcelableExtra(key, BusParcelable::class.java)
@@ -121,7 +122,7 @@ class SetAlarmActivity : AppCompatActivity() {
                     .load(it.data?.data)
                     .override(200, 150) // 사이즈
                     .into(addImageView)
-                uri = it.data?.data!!   // uri는 절대 null이어서는 안돼
+                uri = it.data?.data   // uri는 null일수도 있음
                 Log.d("SetAlarmActivity", "uri값: $uri")
             }
         }

@@ -1,11 +1,14 @@
 package com.example.runrun
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
@@ -32,11 +35,8 @@ class VideoAdapter(private var videos: List<VideoItem> = listOf()) : RecyclerVie
     class VideoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), LifecycleObserver {
         private val titleTextView: TextView = itemView.findViewById(R.id.videoTitleTextView)
         private val youtubePlayerView: YouTubePlayerView = itemView.findViewById(R.id.youtubePlayerView)
+//        val binding : VideoItem
 
-        /**
-         * 비디오 항목을 뷰에 바인딩. YouTube Player를 초기화하고 비디오를 준비!
-         * @param video 표시할 비디오 항목
-         */
         fun bind(video: VideoItem) {
             titleTextView.text = video.snippet.title  // 비디오 제목 설정
             youtubePlayerView.addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {

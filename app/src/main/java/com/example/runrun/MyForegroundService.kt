@@ -162,7 +162,6 @@ class MyForegroundService : Service() {
                 connectTimeout = 15000
                 readTimeout = 10000
                 doInput = true
-
                 connect()
 
                 if (responseCode == HttpURLConnection.HTTP_OK) {

@@ -7,7 +7,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.runrun.databinding.FragmentYoutubeBinding
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -35,6 +37,7 @@ class YoutubeFragment : Fragment() {
     // 사용자가 서치한 키워드
     lateinit var keyWord : String
     private var historyIndex = 0  // 현재 검색 이력의 인덱스를 추적
+    private var file = File(requireContext().filesDir, "test_History.txt")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,8 +74,6 @@ class YoutubeFragment : Fragment() {
     } // onCreateView()
 
     private fun saveHistory(keyWord: String) {
-        val context = requireContext()
-        val file = File(context.filesDir, "test_History.txt")
         if (!file.exists()) {
             file.createNewFile()
         }
@@ -91,7 +92,6 @@ class YoutubeFragment : Fragment() {
     }
 
     private fun getRecentHistory(): String? {
-        val file = File(requireContext().filesDir, "test_History.txt")
         val keywords = file.readLines()
         if (keywords.isEmpty()) return null
 

@@ -131,13 +131,14 @@ class ListFragment : Fragment() {
     private fun uploadImage(docId : String) {
         val imageRef = MyApplication.storage.reference.child("images/${docId}.jpg")
         Log.d("ListFragment", "uri값: $uri")
-        val uploadTask = uri?.let { imageRef.putFile(it) }
-        uploadTask?.addOnSuccessListener {
-            Toast.makeText(requireContext(), "사진 업로드 성공!", Toast.LENGTH_LONG).show()
-        }
-        uploadTask?.addOnFailureListener {
-            Toast.makeText(requireContext(), "사진 업로드 실패..", Toast.LENGTH_LONG).show()
-
+        if (uri.toString() != "null") {
+            val uploadTask = uri?.let { imageRef.putFile(it) }
+            uploadTask?.addOnSuccessListener {
+                Toast.makeText(requireContext(), "사진 업로드 성공!", Toast.LENGTH_LONG).show()
+            }
+            uploadTask?.addOnFailureListener {
+                Toast.makeText(requireContext(), "사진 업로드 실패..", Toast.LENGTH_LONG).show()
+            }
         }
     }
 

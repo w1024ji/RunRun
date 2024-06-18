@@ -16,7 +16,6 @@ class BusRouteListXmlParser {
     fun parse(inputStream: InputStream?): List<ItemList> {
 
         inputStream.use { inputPara ->
-
             val parser: XmlPullParser = Xml.newPullParser()
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false)
             parser.setInput(inputPara, null)
