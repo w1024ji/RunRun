@@ -62,10 +62,13 @@ class MainScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
 
     override fun onResume() {
         super.onResume()
-        // sharedPreference 연결
+        // 탭 색상 변경
         sharedPreference = PreferenceManager.getDefaultSharedPreferences(this)
-        val color = sharedPreference.getString("color", "#00ff00")
+        val color = sharedPreference.getString("color", "#EF9797")
         binding.tabs.setBackgroundColor(Color.parseColor(color))
+        // 탭 텍스트 색상 변경
+        val text_color = sharedPreference.getString("text_color", "#000000")
+        binding.tabs.setTabTextColors(Color.parseColor("#000000"), Color.parseColor(text_color))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -95,7 +98,7 @@ class MainScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
             tab.text = when (position) {
                 0 -> "List"
                 1 -> "Add"
-                2 -> "Weather"
+                2 -> "YouTube"
                 3 -> "Satellite"
                 else -> null
             }
