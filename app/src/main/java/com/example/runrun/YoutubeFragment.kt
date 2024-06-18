@@ -1,23 +1,17 @@
 package com.example.runrun
 
 import android.os.Bundle
-import android.text.Editable
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.runrun.databinding.FragmentYoutubeBinding
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.BufferedReader
 import java.io.File
-import java.io.OutputStreamWriter
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -40,7 +34,7 @@ class YoutubeFragment : Fragment() {
     lateinit var binding : FragmentYoutubeBinding
     // 사용자가 서치한 키워드
     lateinit var keyWord : String
-    private var historyIndex = 0  // Index to keep track of the current history item
+    private var historyIndex = 0  // 현재 검색 이력의 인덱스를 추적
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,11 +55,11 @@ class YoutubeFragment : Fragment() {
         binding.videosRecyclerView.layoutManager = LinearLayoutManager(context)
 
         binding.searchButton.setOnClickListener {
-            if(binding.searchEditText.text.isNotEmpty()){         // 비어있지 않을 때만
-                keyWord = binding.searchEditText.text.toString() // history 구현 중..
+            if(binding.searchEditText.text.isNotEmpty()){      // 비어있지 않을 때만 검색 키워드 저장
+                keyWord = binding.searchEditText.text.toString()
                 saveHistory(keyWord)
             }
-            performSearch(binding.searchEditText.text.toString(), adapter)
+            performSearch(binding.searchEditText.text.toString(), adapter) // 최근 검색 키워드 불러오기
         }
 
         // history 버튼을 누르면 제일 최근에 검색한 이력을 searchEditText에 올리기
@@ -79,30 +73,21 @@ class YoutubeFragment : Fragment() {
     private fun saveHistory(keyWord: String) {
         val context = requireContext()
         val file = File(context.filesDir, "test_History.txt")
-
-        // Check if the file exists, create if not
         if (!file.exists()) {
             file.createNewFile()
         }
-
-        // Read existing keywords from the file
-        val existingKeywords = LinkedHashSet(file.readLines())
-
-        // Add the new keyword if it's not already in the set
+        val existingKeywords = LinkedHashSet(file.readLines()) // 기존 키워드 읽기
         if (keyWord !in existingKeywords) {
             if (existingKeywords.size >= 5) {
-                // If there are already 5 keywords, remove the oldest one
                 val iterator = existingKeywords.iterator()
                 if (iterator.hasNext()) {
-                    iterator.next() // Move to the first
-                    iterator.remove() // Remove the oldest keyword
+                    iterator.next() // 첫 번째 키워드
+                    iterator.remove() // 가장 오래된 키워드 삭제
                 }
             }
             existingKeywords.add(keyWord)
         }
-
-        // Write all keywords back to the file
-        file.writeText(existingKeywords.joinToString("\n"))
+        file.writeText(existingKeywords.joinToString("\n")) // 키워드 저장
     }
 
     private fun getRecentHistory(): String? {
@@ -110,20 +95,19 @@ class YoutubeFragment : Fragment() {
         val keywords = file.readLines()
         if (keywords.isEmpty()) return null
 
-        // Calculate index to access the list from the end to the beginning
         val reversedIndex = keywords.size - 1 - historyIndex
         val currentKeyword = keywords.getOrNull(reversedIndex)
-        historyIndex = (historyIndex + 1) % keywords.size
+        historyIndex = (historyIndex + 1) % keywords.size // 이력 인덱스 업데이트
         return currentKeyword
     }
 
-
+    // query: 사용자가 입력한 검색 뭐리. adapter: 비디오 목록을 표시하는 데 사용되는 어댑터
     private fun performSearch(query: String, adapter: VideoAdapter) {
-        // Call the YouTube API using Retrofit to search for videos based on the user's query
+        // RetrofitClient를 사용하여 YouTube API에 검색 요청을 보내기
         RetrofitClient.instance.searchVideos(
             part = "snippet",
             query = query,
-            maxResults = 3, // Limit results to 3 to only fetch the first three videos
+            maxResults = 3,
             apiKey = BuildConfig.GOOGLE_API
         ).enqueue(object : Callback<YouTubeSearchResponse> {
             override fun onResponse(
@@ -133,11 +117,9 @@ class YoutubeFragment : Fragment() {
                 if (response.isSuccessful) {
                     Log.d("YoutubeFragment", "response.isSuccessful 성공적")
                     response.body()?.items?.let {
-                        // Update the adapter with the list of video items
                         adapter.updateData(it)
                     }
                 } else {
-                    Log.d("YoutubeFragment", "response 실패..")
                     Log.e("YoutubeFragment", "API Error-Response Error: ${response.errorBody()?.string()}")
                 }
             }
