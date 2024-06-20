@@ -37,7 +37,6 @@ class YoutubeFragment : Fragment() {
     // 사용자가 서치한 키워드
     lateinit var keyWord : String
     private var historyIndex = 0  // 현재 검색 이력의 인덱스를 추적
-    private var file = File(requireContext().filesDir, "test_History.txt")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,6 +73,7 @@ class YoutubeFragment : Fragment() {
     } // onCreateView()
 
     private fun saveHistory(keyWord: String) {
+        var file = File(requireContext().filesDir, "test_History.txt")
         if (!file.exists()) {
             file.createNewFile()
         }
@@ -92,6 +92,7 @@ class YoutubeFragment : Fragment() {
     }
 
     private fun getRecentHistory(): String? {
+        var file = File(requireContext().filesDir, "test_History.txt")
         val keywords = file.readLines()
         if (keywords.isEmpty()) return null
 
