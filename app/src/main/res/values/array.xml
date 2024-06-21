@@ -9,6 +9,7 @@
         <item>Saturday</item>
         <item>Sunday</item>
     </string-array>
+
     <string-array name="hour">
         <item>00</item>
         <item>01</item>
@@ -35,6 +36,7 @@
         <item>22</item>
         <item>23</item>
     </string-array>
+
     <string-array name="minute">
         <item>00</item>
         <item>05</item>
@@ -48,4 +50,5 @@
         <item>50</item>
         <item>55</item>
     </string-array>
+
 </resources>

@@ -67,7 +67,7 @@ class MyForegroundService : Service() {
                 .setSmallIcon(R.drawable.ic_notification)
                 .build()
 
-            startForeground(1, notification)
+            startForeground(1, notification) // FOREGROUND_SERVICE_TYPE_SPECIAL_USE 인자에 추가해야 하나?
         }
     }
 
@@ -162,7 +162,6 @@ class MyForegroundService : Service() {
                 connectTimeout = 15000
                 readTimeout = 10000
                 doInput = true
-
                 connect()
 
                 if (responseCode == HttpURLConnection.HTTP_OK) {

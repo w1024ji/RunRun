@@ -7,13 +7,20 @@ import android.app.PendingIntent
 import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
 import android.os.Parcelable
+import android.provider.MediaStore
 import android.util.Log
+import android.view.View
 import android.widget.Button
+import android.widget.ImageView
+import android.widget.MediaController
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import java.util.*
@@ -29,8 +36,15 @@ class SetAlarmActivity : AppCompatActivity() {
     private lateinit var routeId : String
     private lateinit var nodeId : String
     private lateinit var notiNm : TextView
+    lateinit var busNm : String
+    lateinit var staNm : String
 
     lateinit var busData : BusParcelable
+    lateinit var selectedDays : MutableList<Int>
+
+    // 이미지 업로드
+    var uri : Uri? = null
+    //content://com.google.android.apps.photos.contentprovider/-1/1/content%3A%2F%2Fmedia%2Fexternal%2Fimages%2Fmedia%2F90/ORIGINAL/NONE/1815428854
 
     inline fun <reified BusParcelable : Parcelable> Intent.parcelable(key: String): BusParcelable? = when {
         SDK_INT >= 33 -> getParcelableExtra(key, BusParcelable::class.java)
@@ -50,9 +64,15 @@ class SetAlarmActivity : AppCompatActivity() {
         val routeNm : TextView = findViewById(R.id.bus01)
         val stationNm : TextView = findViewById(R.id.station01)
         notiNm = findViewById(R.id.notificationName)
+        // 이미지 업로드
+        val uploadButton : Button = findViewById(R.id.uploadButton)
+        var addImageView : ImageView = findViewById(R.id.addImageView)
 
         // MapViewActivity에서 전달된 데이터를 받아옴
         busData = intent.parcelable("busData")!!
+
+        busNm = busData.routeName
+        staNm = busData.stationName
 
         routeNm.text = busData.routeName
         stationNm.text = busData.stationName
@@ -93,10 +113,30 @@ class SetAlarmActivity : AppCompatActivity() {
             timePickerDialog.show()
         }
 
+        // 이미지 업로드 하기
+        val requestLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+            if(it.resultCode == android.app.Activity.RESULT_OK){
+                addImageView.visibility = View.VISIBLE // 이미지 뷰 다시 보이게
+                Glide
+                    .with(applicationContext)
+                    .load(it.data?.data)
+                    .override(200, 150) // 사이즈
+                    .into(addImageView)
+                uri = it.data?.data   // uri는 null일수도 있음
+                Log.d("SetAlarmActivity", "uri값: $uri")
+            }
+        }
+        uploadButton.setOnClickListener {
+            val intent = Intent(Intent.ACTION_PICK)
+            intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*")
+            requestLauncher.launch(intent)
+        }
+
+
         setAlarmButton.setOnClickListener {
             Log.d("SetAlarmActivity", "Set Alarm 버튼 클릭")
 
-            val selectedDays = mutableListOf<Int>()
+            selectedDays = mutableListOf<Int>()
             for (i in 0 until dayChipGroup.childCount) {
                 val chip = dayChipGroup.getChildAt(i) as Chip
                 if (chip.isChecked) {
@@ -111,14 +151,38 @@ class SetAlarmActivity : AppCompatActivity() {
                     }
                 }
             }
+            Log.d("SetAlarmActivity", "selectedDays: $selectedDays")
             scheduleAlarm(startHour, startMinute, endHour, endMinute, selectedDays)
-            goToafterSet()
+            goToConfirmActivity() // 알람 세팅 끝났으면 컨펌 화면으로 넘기기
         }
-    }
+    } // onCreate()
 
-    private fun goToafterSet(){
-        val afterSetIntent = Intent(this, ListOfAlarm::class.java)
-        startActivity(afterSetIntent)
+    // 알람 세팅 끝났으면 ConfimActivity로 화면 전환
+    private fun goToConfirmActivity(){
+        var days: MutableList<String> = mutableListOf()
+
+        for (i in 0 until selectedDays.size) {
+            when (selectedDays[i]) {
+                1 -> days.add("sunday")
+                2 -> days.add("monday")
+                3 -> days.add("tuesday")
+                4 -> days.add("wednesday")
+                5 -> days.add("thursday")
+                6 -> days.add("friday")
+                7 -> days.add("saturday")
+            }
+        }
+        val confirmIntent = Intent(this, ConfirmActivity::class.java)
+        confirmIntent.putExtra("notiNm", "알람 이름: ${notiNm.text}") // 알람 이름
+        confirmIntent.putExtra("busNm", "버스 이름: $busNm") // 버스
+        confirmIntent.putExtra("staNm", "정류장 이름: $staNm") // 정류장
+        confirmIntent.putExtra("selectedDays", "선택한 요일: ${days}") // 요일
+        val whenToWhen = "$startHour:$startMinute~$endHour:$endMinute"
+        confirmIntent.putExtra("whenToWhen", whenToWhen)
+        Log.d("SetAlarmActivity", "ConfirmActivity로 보내는 인텐트 속 uri값: $uri") // content://com.google.android.apps.photos.cont...
+        confirmIntent.putExtra("uri", uri.toString()) // 이미지 uri 보내기 >>toString()꼭 해야함<<
+
+        startActivity(confirmIntent)
     }
 
     // 알림을 스케줄링하는 메서드

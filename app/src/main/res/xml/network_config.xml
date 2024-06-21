@@ -3,5 +3,9 @@
 <network-security-config>
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="true">ws.bus.go.kr</domain>
+        <domain includeSubdomains="true">apis.data.go.kr</domain>
+        <domain includeSubdomains="true">www.googleapis.com</domain>
+        <domain includeSubdomains="true">www.kma.go.kr</domain>
     </domain-config>
+
 </network-security-config>

@@ -23,7 +23,7 @@
     <string name="selected_station_name">Selected Station Name</string>
     <string name="pick_a_day">pick a day</string>
     <string name="pick_a_time">pick a time</string>
-    <string name="name_of_notification">name of notification</string>
+    <string name="name_of_notification">알림 이름을 입력해주세요</string>
     <string name="next">NEXT</string>
     <string name="monday">Monday</string>
     <string name="tuesday">Tuesday</string>
@@ -35,4 +35,25 @@
     <string name="congrats">Congratulations! \nWeekly Alarm is successfully set.</string>
     <string name="returnTo">return to main</string>
     <string name="mainDescription">welcome to main page</string>
+    <string name="drawer_opened">드로어가 열림</string>
+    <string name="drawer_closed">드로어가 닫힘\n</string>
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+
+    <!-- 로그인 auth 구현 중 -->
+    <string name="default_client_id">85415682290-0r461j96mlvk7if9nfoumhq1no37hjt0.apps.googleusercontent.com</string>
+
+
 </resources>

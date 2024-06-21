@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/confirm_activity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ConfirmActivity"
+    >
+
+    <TextView
+        android:id="@+id/confirmNotiNm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="50dp"
+        android:textSize="20dp"
+        android:text="알람 이름"
+        />
+    <TextView
+        android:id="@+id/confirmBus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="50dp"
+        android:text="버스"
+        android:textSize="20dp"
+        />
+    <TextView
+        android:id="@+id/confirmStation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="50dp"
+        android:text="정류장"
+        android:textSize="20dp"/>
+
+    <TextView
+        android:id="@+id/confirmDays"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="50dp"
+        android:text="요일"
+        android:textSize="20dp"
+        />
+    <TextView
+        android:id="@+id/confirmWhenToWhen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="50dp"
+        android:text="언제부터 언제"
+        android:textSize="20dp"
+        />
+
+    <Button
+        android:id="@+id/confirmNextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="250dp"
+        android:text="Next"
+        />
+
+</LinearLayout>

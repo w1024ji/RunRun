@@ -7,7 +7,7 @@
 -->
 <full-backup-content>
     <!--
-   <include domain="sharedpref" path="."/>
+   <include domain="sharedpref" path="."/> 안뇽
    <exclude domain="sharedpref" path="device.xml"/>
 -->
 </full-backup-content>
