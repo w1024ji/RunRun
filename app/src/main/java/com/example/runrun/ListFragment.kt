@@ -2,17 +2,21 @@ package com.example.runrun
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.runrun.databinding.FragmentListBinding
@@ -33,6 +37,8 @@ class ListFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    // sharedPreferences를 위한 변수
+    lateinit var sharedPreference : SharedPreferences
     // binding
     lateinit var binding : FragmentListBinding
     private var datas: MutableList<NotificationItem> = mutableListOf()
@@ -44,6 +50,18 @@ class ListFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // 리사이클 색상 변경
+        sharedPreference = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        val recycle_color = sharedPreference.getString("recycle_color", "#EF9797")
+
+        binding.recyclerView.setBackgroundColor(Color.parseColor(recycle_color))
+        // 플로팅 버튼 색상 변경
+        val FAB_color = sharedPreference.getString("FAB_color", "#EF9797")
+        binding.mainFab.setBackgroundColor(Color.parseColor(FAB_color))
     }
 
     override fun onCreateView(
@@ -113,13 +131,14 @@ class ListFragment : Fragment() {
     private fun uploadImage(docId : String) {
         val imageRef = MyApplication.storage.reference.child("images/${docId}.jpg")
         Log.d("ListFragment", "uri값: $uri")
-        val uploadTask = uri?.let { imageRef.putFile(it) }
-        uploadTask?.addOnSuccessListener {
-            Toast.makeText(requireContext(), "사진 업로드 성공!", Toast.LENGTH_LONG).show()
-        }
-        uploadTask?.addOnFailureListener {
-            Toast.makeText(requireContext(), "사진 업로드 실패..", Toast.LENGTH_LONG).show()
-
+        if (uri.toString() != "null") {
+            val uploadTask = uri?.let { imageRef.putFile(it) }
+            uploadTask?.addOnSuccessListener {
+                Toast.makeText(requireContext(), "사진 업로드 성공!", Toast.LENGTH_LONG).show()
+            }
+            uploadTask?.addOnFailureListener {
+                Toast.makeText(requireContext(), "사진 업로드 실패..", Toast.LENGTH_LONG).show()
+            }
         }
     }
 

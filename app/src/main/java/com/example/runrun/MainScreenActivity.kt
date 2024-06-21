@@ -21,7 +21,6 @@ import androidx.preference.PreferenceManager
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.example.runrun.databinding.ActivityMainScreenBinding
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -51,7 +50,7 @@ class MainScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
                     putString("uri", uri.toString()) // 이미지 업로드 구현 중
                 }
             }
-            fragments = listOf(listFragment, AddFragment(), WeatherFragment(), SatelliteFragment())
+            fragments = listOf(listFragment, AddFragment(), YoutubeFragment(), SatelliteFragment())
         }
         override fun getItemCount(): Int {
             return fragments.size
@@ -63,10 +62,13 @@ class MainScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
 
     override fun onResume() {
         super.onResume()
-        // sharedPreference 연결
+        // 탭 색상 변경
         sharedPreference = PreferenceManager.getDefaultSharedPreferences(this)
-        val color = sharedPreference.getString("color", "#00ff00")
+        val color = sharedPreference.getString("color", "#EF9797")
         binding.tabs.setBackgroundColor(Color.parseColor(color))
+        // 탭 텍스트 색상 변경
+        val text_color = sharedPreference.getString("text_color", "#000000")
+        binding.tabs.setTabTextColors(Color.parseColor("#000000"), Color.parseColor(text_color))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -96,7 +98,7 @@ class MainScreenActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
             tab.text = when (position) {
                 0 -> "List"
                 1 -> "Add"
-                2 -> "Weather"
+                2 -> "YouTube"
                 3 -> "Satellite"
                 else -> null
             }

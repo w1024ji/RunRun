@@ -1,5 +1,5 @@
 import com.tickaroo.tikxml.annotation.Element
-import com.tickaroo.tikxml.annotation.PropertyElement
+import com.tickaroo.tikxml.annotation.TextContent
 import com.tickaroo.tikxml.annotation.Xml
 
 @Xml(name = "response")
@@ -22,12 +22,12 @@ data class MyXmlItems(
 
 @Xml(name = "item")
 data class MyXmlItem(
-    @PropertyElement
-    val satImgCFiles: String? = null
+    @Element
+    val satImgCFiles: MutableList<SatImgCFile> )
+
+
+@Xml(name="satImgC-file")
+data class SatImgCFile(
+    @TextContent
+    val value: String? = null
 )
-
-
-//@Xml
-//data class SatImgCFile(
-//    @PropertyElement val value: String? = null
-//)

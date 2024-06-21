@@ -20,7 +20,7 @@
         <EditText
             android:id="@+id/enterBusName"
             android:layout_width="wrap_content"
-            android:layout_height="48sp"
+            android:layout_height="47sp"
             android:layout_marginTop="112dp"
             android:ems="10"
             android:hint="@string/enter_bus"

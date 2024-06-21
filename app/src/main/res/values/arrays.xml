@@ -1,14 +1,47 @@
 <resources>
     <!-- Reply Preference -->
+
+    <!-- Tab 색상 선택 -->
     <string-array name="my_color">
         <item>빨강</item>
         <item>초록</item>
         <item>파랑</item>
     </string-array>
-
     <string-array name="my_color_values">
-        <item>#ff0000</item>
-        <item>#00ff00</item>
-        <item>#0000ff</item>
+        <item>#EDB0B0</item>
+        <item>#A6ECA6</item>
+        <item>#A5CEEF</item>
     </string-array>
+    <!-- Tab 텍스트 색상 선택 -->
+    <string-array name="text_color">
+        <item>검정색</item>
+        <item>흰색</item>
+        <item>노란색</item>
+    </string-array>
+    <string-array name="text_color_value">
+        <item>#000000</item>
+        <item>#FFFFFF</item>
+        <item>#F8E433</item>
+    </string-array>
+    <!-- 리사이클 뷰 색상 선택 -->
+    <string-array name="recycle_color">
+        <item>빨강</item>
+        <item>초록</item>
+        <item>파랑</item>
+    </string-array>
+    <string-array name="recycle_color_values">
+        <item>#EDB0B0</item>
+        <item>#A6ECA6</item>
+        <item>#A5CEEF</item>
+    </string-array>
+    <!-- 플로팅 버튼 색상 선택 -->
+    <string-array name="FAB_color">
+        <item>하얀색</item>
+        <item>회색</item>
+    </string-array>
+    <string-array name="FAB_color_values">
+        <item>#F6F6F6</item>
+        <item>#C8C5C1</item>
+    </string-array>
+
 </resources>

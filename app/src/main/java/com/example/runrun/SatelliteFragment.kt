@@ -68,27 +68,33 @@ class SatelliteFragment : Fragment() {
         call.enqueue(object : Callback<XmlResponse> {
             override fun onResponse(call: Call<XmlResponse>, response: Response<XmlResponse>) {
                 if (response.isSuccessful) {
-                    Log.d("SatelliteFragment", "onResponse(): ${call.request()}")
-                    Log.d("SatelliteFragment", "response.body()값: ${response.body()}")
+                    val items = response.body()?.body?.items?.item
+                    if (!items.isNullOrEmpty()) {
+                        // Assuming the list is sorted with the most recent last, grab the last image URL
+                        val imageFiles = items.firstOrNull()?.satImgCFiles
+                        Log.d("SatelliteFragment", "imageFiles 값: $imageFiles")
 
-                    val item = response.body()?.body?.items?.item
-                    if (item != null) {
-                        val imageUrl = item.firstOrNull()?.satImgCFiles
-                        Log.d("SatelliteFragment", "First image URL: $imageUrl")
+                        val mostRecentImageUrl = imageFiles?.lastOrNull()?.value
+                        Log.d("SatelliteFragment", "mostRecentImageUrl 값: $mostRecentImageUrl")
 
-                        if (!imageUrl.isNullOrEmpty()) {
-                            // Use Glide to load the image into the ImageView
+                        // Load the most recent image URL into the ImageView using Glide
+                        if (mostRecentImageUrl != null) {
                             Glide.with(requireContext())
-                                .load(imageUrl)
-                                .into(binding.satelliteImageView) // Assuming you have an ImageView in your layout with ID imageView
+                                .load(mostRecentImageUrl)
+                                .centerCrop()
+                                .into(binding.satelliteImageView)
                         } else {
-                            Toast.makeText(context, "No image URL available", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "No recent image URL available", Toast.LENGTH_SHORT).show()
                         }
+                    } else {
+                        Log.d("SatelliteFragment", "No items found in response")
+                        Toast.makeText(context, "No data available", Toast.LENGTH_SHORT).show()
                     }
                 } else {
                     Log.d("SatelliteFragment", "Response was not successful")
                 }
             }
+
 
             override fun onFailure(call: Call<XmlResponse>, t: Throwable) {
                 Log.d("SatelliteFragment", "onFailure ${call.request()}", t)

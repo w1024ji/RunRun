@@ -28,13 +28,11 @@ class TwoInputs : AppCompatActivity() {
             val busInfoCollection = db.collection("busInfo")
             val stationNameInput = stationName.text.toString()
             val busNameInput = busName.text.toString()
-
             Log.d("MainActivity", "db값: $db, busInfoCollection값: $busInfoCollection")
 
             val query = busInfoCollection
                 .whereEqualTo("정류소명", stationNameInput)
                 .whereEqualTo("노선명", busNameInput)
-
             Log.d("MainActivity", "query값: $query")
 
             query.get()

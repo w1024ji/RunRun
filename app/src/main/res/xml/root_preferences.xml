@@ -8,11 +8,34 @@
             app:useSimpleSummaryProvider="true" />
 
         <ListPreference
-            app:defaultValue="#00ff00"
+            app:defaultValue="#EF9797"
             app:entries="@array/my_color"
             app:entryValues="@array/my_color_values"
             app:key="color"
-            app:title="색상 선택"
+            app:title="Tab 색상 선택"
+            app:useSimpleSummaryProvider="true" />
+        <ListPreference
+            app:defaultValue="#000000"
+            app:entries="@array/text_color"
+            app:entryValues="@array/text_color_value"
+            app:key="text_color"
+            app:title="Tab 텍스트 색상 선택"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            app:defaultValue="#FFEB3B"
+            app:entries="@array/recycle_color"
+            app:entryValues="@array/recycle_color_values"
+            app:key="recycle_color"
+            app:title="리사이클 색상 선택"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            app:defaultValue="#E3CD12"
+            app:entries="@array/FAB_color"
+            app:entryValues="@array/FAB_color_values"
+            app:key="FAB_color"
+            app:title="플로팅 버튼 색상 선택"
             app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>
